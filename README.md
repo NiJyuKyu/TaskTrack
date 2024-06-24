@@ -8,7 +8,7 @@ Workspace Bar
 - create workspace
 - View All workspace
 
-Top Navigation Bar (OPTION)
+Top Navigation Bar
 - search bar
 - New (create new tasks)
 - settings and Notification
