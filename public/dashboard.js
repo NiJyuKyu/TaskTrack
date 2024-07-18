@@ -184,3 +184,150 @@ pageContainers.forEach(container => {
     container.style.display = 'none';
   }
 });
+
+// User authentication
+let currentUser = null;
+
+// Function to check if user is logged in
+function checkAuth() {
+    // Make an API call to your server to check if the user is authenticated
+    fetch('/api/check-auth')
+        .then(response => response.json())
+        .then(data => {
+            if (data.authenticated) {
+                currentUser = data.user;
+                updateProfileDisplay();
+            } else {
+                // Redirect to login page if not authenticated
+                window.location.href = '/login';
+            }
+        });
+}
+
+// Function to update profile display
+function updateProfileDisplay() {
+    document.getElementById('profile-name').textContent = currentUser.name;
+    document.getElementById('profile-pic').src = currentUser.profilePicture || '/default-profile-pic.png';
+}
+
+// Function to handle logout
+document.getElementById('logout').addEventListener('click', (e) => {
+    e.preventDefault();
+    fetch('/api/logout', { method: 'POST' })
+        .then(() => {
+            window.location.href = '/login';
+        });
+});
+
+// Edit profile modal
+const modal = document.getElementById('edit-profile-modal');
+const editProfileBtn = document.getElementById('edit-profile');
+const closeBtn = document.getElementsByClassName('close')[0];
+
+editProfileBtn.onclick = () => {
+    modal.style.display = 'block';
+    // Populate form with current user data
+    document.getElementById('username').value = currentUser.username;
+    document.getElementById('name').value = currentUser.name;
+}
+
+closeBtn.onclick = () => {
+    modal.style.display = 'none';
+}
+
+// Handle profile edit form submission
+document.getElementById('edit-profile-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    
+    fetch('/api/update-profile', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            currentUser = data.user;
+            updateProfileDisplay();
+            modal.style.display = 'none';
+        } else {
+            alert('Failed to update profile. Please try again.');
+        }
+    });
+});
+
+// Call checkAuth when the page loads
+window.addEventListener('load', checkAuth);
+
+// Get the button that opens the modal
+var btn = document.getElementById("edit-profile");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+// Handle form submission
+document.getElementById("editProfileForm").onsubmit = function(e) {
+  e.preventDefault();
+  // Add your form submission logic here
+  // You can use FormData to handle file uploads
+  var formData = new FormData(this);
+  
+  // Example: Send formData to your server
+  fetch('/api/update-profile', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    if(data.success) {
+      alert('Profile updated successfully');
+      modal.style.display = "none";
+      // Update the UI with new profile data
+    } else {
+      alert('Failed to update profile');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('An error occurred while updating the profile');
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const editProfileLink = document.getElementById('edit-profile');
+    const editProfileModal = document.getElementById('editProfileModal');
+    const closeButton = editProfileModal.querySelector('.close');
+
+    editProfileLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        editProfileModal.style.display = 'block';
+    });
+
+    closeButton.addEventListener('click', function() {
+        editProfileModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', function(e) {
+        if (e.target == editProfileModal) {
+            editProfileModal.style.display = 'none';
+        }
+    });
+});
