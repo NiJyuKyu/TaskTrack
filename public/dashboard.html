@@ -1,38 +1,237 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Track Dashboard</title>
-    <link rel="stylesheet" href="dashboard.css">
+  <title>TaskTrack</title>
+  <link rel="stylesheet" href="dashboard.css">
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/main.min.css" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <h1>Task Track Dashboard</h1>
-        <nav>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Tasks</a></li>
-                <li><a href="#">Projects</a></li>
-                <li><a href="#">Profile</a></li>
-                <li><a href="#">Logout</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section id="tasks">
+  <div class="container">
+    <div class="sidebar">
+      <div class="logo">
+        <div class="tasktrack">TaskTrack</div>
+      </div>
+      <ul class="nav">
+        <li class="nav-item active" data-page="overview">
+          <i class="fas fa-list"></i>
+          Overview
+        </li>
+        <li class="nav-item" data-page="calendar">
+          <i class="fas fa-calendar-alt"></i>
+          Calendar
+        </li>
+        <li class="nav-item" data-page="activity">
+          <i class="fas fa-history"></i>
+          Activity
+        </li>
+        <li class="nav-item" data-page="tasks">
+          <i class="fas fa-tasks"></i>
+          Tasks
+        </li>
+        <li class="nav-item" data-page="projects">
+          <i class="fas fa-project-diagram"></i>
+          Projects
+        </li>
+      </ul>
+    </div>
+    <div class="main-content">
+      <div class="header">
+        <div class="project-title">
+          <div class="project-name">Inventory System</div>
+          <div class="project-details">
+            <div class="project-status">Projects</div>
+            <div class="project-status">Team projects</div>
+            <div class="project-status">Incomplete</div>
+          </div>
+        </div>
+        <div class="options">
+          <i class="fas fa-ellipsis-h"></i>
+        </div>
+      </div>
+      <div class="project-overview" id="overview-page">
+        <div class="project-info">
+          <div class="project-header">
+            <div class="project-name">Cloth</div>
+            <div class="project-description">Small and Concise headline</div>
+          </div>
+          <div class="project-details">
+            <div class="detail-item">
+              <label>Created At</label>
+              <span>May, 15 2022 14:23 PM</span>
+            </div>
+            <div class="detail-item">
+              <label>Created</label>
+              <span>Mar 23, 10:34 PM</span>
+            </div>
+            <div class="detail-item">
+              <label>Deadline</label>
+              <span>Jun 02, 04:01PM</span>
+            </div>
+            <div class="detail-item">
+              <label>Tracked Time</label>
+              <span>10H 32M</span>
+            </div>
+          </div>
+          <div class="project-description">
+            TaskTrack is an intuitive task management system designed to help teams collaborate and manage their projects with ease. It offers powerful features such as task tracking, project organization, scheduling, and communication tools to keep teams organized and on top of their projects.
+          </div>
+        </div>
+        <div class="project-sidebar">
+          <div class="sidebar-item">
+            <label>Tags</label>
+            <div class="tag-list">
+              <span class="tag">Profitable</span>
+              <span class="tag">Ai</span>
+              <span class="tag">1 Person</span>
+            </div>
+          </div>
+          <div class="sidebar-item">
+            <label>Assign</label>
+            <span class="assignee">@mustafa</span>
+          </div>
+          <div class="sidebar-item">
+            <label>Group</label>
+            <div class="group-list">
+              <span class="group">Team projects</span>
+              <span class="group">Fashion</span>
+            </div>
+          </div>
+          <div class="sidebar-item">
+            <label>Priority</label>
+            <span class="priority">Small</span>
+          </div>
+        </div>
+      </div>
+      <div class="project-calendar" id="calendar-page" style="display: none;">
+        <div id="calendar"></div>
+      </div>
+      <div class="project-activity" id="activity-page" style="display: none;">
+        <!-- Activity content -->
+      </div>
+      <div class="project-tasks" id="tasks-page" style="display: none;">
+        <div class="project-tasks" id="tasks-page" style="display: none;">
             <h2>Tasks</h2>
-            <ul>
-                <!-- List of tasks will go here -->
-            </ul>
-        </section>
-        <section id="projects">
-            <h2>Projects</h2>
-            <ul>
-                <!-- List of projects will go here -->
-            </ul>
-        </section>
-    </main>
-    <script src="dashboard.js"></script>
+            <div class="task-list">
+              <!-- Task items will be dynamically added here -->
+            </div>
+            <button id="add-task-btn">Add Task</button>
+          </div>
+      </div>
+      <div class="project-projects" id="projects-page" style="display: none;">
+        <div class="projects-header">
+          <h2>Projects</h2>
+          <i class="fas fa-plus-circle"></i>
+        </div>
+        <ul class="projects-list">
+          <li class="project-item" data-project="flower-shop">
+            <div class="project-icon"><i class="fas fa-flower"></i></div>
+            <div class="project-name">Flower Shop</div>
+            <div class="project-progress">23</div>
+          </li>
+          <li class="project-item" data-project="cloth">
+            <div class="project-icon"><i class="fas fa-tshirt"></i></div>
+            <div class="project-name">Cloth</div>
+            <div class="project-progress">345</div>
+          </li>
+          <li class="project-item" data-project="gamer-boy">
+            <div class="project-icon"><i class="fas fa-gamepad"></i></div>
+            <div class="project-name">Gamer Boy</div>
+            <div class="project-progress">568</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="sidebar right-sidebar">
+      <div class="sidebar-header">
+        <h2>To Do Lists</h2>
+        <i class="fas fa-plus-circle"></i>
+      </div>
+      <ul class="sidebar-list">
+        <li class="sidebar-item">
+          <input type="checkbox" checked>
+          <label>Donate $500 to the charity</label>
+          <span class="sidebar-item-date">May 20, 2020</span>
+          <div class="sidebar-item-tags">
+            <span class="sidebar-item-tag">Donations</span>
+            <span class="sidebar-item-tag">Social</span>
+          </div>
+        </li>
+        <li class="sidebar-item">
+          <input type="checkbox">
+          <label>Do 500 pushups</label>
+          <span class="sidebar-item-date">May 20, 2020</span>
+          <div class="sidebar-item-tags">
+            <span class="sidebar-item-tag">Sport</span>
+            <span class="sidebar-item-tag">Selfcare</span>
+          </div>
+        </li>
+        <li class="sidebar-item">
+          <input type="checkbox" checked>
+          <label>Buy new headset</label>
+          <span class="sidebar-item-date">May 20, 2020</span>
+          <div class="sidebar-item-tags">
+            <span class="sidebar-item-tag">Shopping</span>
+            <span class="sidebar-item-tag">Set-up</span>
+          </div>
+        </li>
+        <li class="sidebar-item">
+          <input type="checkbox">
+          <label>Clean the room</label>
+          <span class="sidebar-item-date">May 20, 2020</span>
+          <div class="sidebar-item-tags">
+            <span class="sidebar-item-tag">Selfcare</span>
+          </div>
+        </li>
+      </ul>
+      <div class="sidebar-header">
+        <h2>Notes</h2>
+        <i class="fas fa-plus-circle"></i>
+      </div>
+      <div class="note-list">
+        <div class="note-item">
+          <div class="note-header">
+            <span class="note-date">Apr 2, 2023</span>
+            <i class="fas fa-ellipsis-v"></i>
+          </div>
+          <div class="note-content">
+            ChatGPT Tricks for business marketing
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id dui mi. Fusce varius bibendum ante, non lacinia. Fallusasc ce variu slorem ipsum dolor sit amet
+          </div>
+          <div class="note-tags">
+            <span class="note-tag">Tech</span>
+            <span class="note-tag">Ai</span>
+          </div>
+        </div>
+        <div class="note-item">
+          <div class="note-header">
+            <span class="note-date">Apr 3, 2023</span>
+            <i class="fas fa-ellipsis-v"></i>
+          </div>
+          <div class="note-content">
+            Notes on being a successful entrepreneur
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id dui mi. Fusce varius bibendum ante, non lacinia. Fallusasc ce variu slorem ipsum dolor sit amet
+          </div>
+          <div class="note-tags">
+            <span class="note-tag">Learning</span>
+            <span class="note-tag">Self-improvement</span>
+          </div>
+        </div>
+        <div class="note-item">
+          <div class="note-header">
+            <span class="note-date">Apr 4, 2023</span>
+            <i class="fas fa-ellipsis-v"></i>
+          </div>
+          <div class="note-content">
+            What are my life Goals and what I'm currently doing to achieve them
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id dui mi. Fusce varius bibendum ante, non lacinia. Fallusasc ce variu slorem ipsum dolor sit amet
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://kit.fontawesome.com/your-fontawesome-kit-id.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/main.min.js"></script>
+  <script src="dashboard.js"></script>
 </body>
 </html>
