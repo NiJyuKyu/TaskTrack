@@ -211,13 +211,31 @@ function updateProfileDisplay() {
 }
 
 // Function to handle logout
-document.getElementById('logout').addEventListener('click', (e) => {
-    e.preventDefault();
-    fetch('/api/logout', { method: 'POST' })
-        .then(() => {
-            window.location.href = '/login';
-        });
+document.addEventListener('DOMContentLoaded', function() {
+  // Handle logout
+    const logoutButton = document.getElementById('logout');
+    logoutButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        fetch('/api/logout', { method: 'POST' })
+            .then(response => {
+                if (response.ok) {
+                    // Clear any client-side stored data
+                    localStorage.removeItem('userToken'); // Example for token-based authentication
+                    sessionStorage.clear(); // Clear session storage if needed
+
+                    // Redirect to login page
+                    window.location.href = '/login'; // Replace with your actual login page URL
+                } else {
+                    // Handle error case if needed
+                    console.error('Logout failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error during logout:', error);
+            });
+    });
 });
+
 
 // Edit profile modal
 const modal = document.getElementById('edit-profile-modal');

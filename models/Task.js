@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const TaskSchema = new mongoose.Schema({
+const TaskSchema = Schema({
   title: {
     type: String,
     required: true,
@@ -9,6 +10,14 @@ const TaskSchema = new mongoose.Schema({
   description: {
     type: String,
     trim: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  priority: {
+    type: String,
+    enum: ['Low', 'Medium', 'High'],
   },
   status: {
     type: String,
