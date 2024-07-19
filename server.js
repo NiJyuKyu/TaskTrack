@@ -26,9 +26,12 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/tasktrack', { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('MongoDB connected'))
-    .catch(err => console.log(err));
+mongoose.connect('mongodb://localhost/tasktrack', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+}).then(() => console.log('MongoDB connected'))
+.catch(err => console.log(err));
+
 
 // User Schema and Model
 const userSchema = new mongoose.Schema({
@@ -133,5 +136,19 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Start Server
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Define a simple route
+app.get('/', (req, res) => {
+    res.send('Hello from Task Track');
+});
+
+//start server
+const port = 5000;
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+});
+
+// Import routes
+const taskRoutes = require('./routes/tasks');
+
+// Use routes
+app.use('/api', taskRoutes);
