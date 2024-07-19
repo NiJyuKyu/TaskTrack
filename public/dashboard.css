@@ -469,3 +469,42 @@ body {
 .btn-save:hover {
   background-color: #45a049;
 }
+
+#to-do-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+#to-do-list .sidebar-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+#to-do-list .sidebar-item input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+#to-do-list .sidebar-item label {
+  flex: 1;
+}
+
+#to-do-list .sidebar-item .delete-to-do {
+  background: none;
+  border: none;
+  color: red;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#add-to-do-btn {
+  cursor: pointer;
+  font-size: 24px;
+  color: #007BFF;
+}
+
+#add-to-do-btn:hover {
+  color: #0056b3;
+}

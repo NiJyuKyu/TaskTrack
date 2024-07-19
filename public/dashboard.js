@@ -330,22 +330,35 @@ document.getElementById("editProfileForm").onsubmit = function(e) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    const editProfileLink = document.getElementById('edit-profile');
-    const editProfileModal = document.getElementById('editProfileModal');
-    const closeButton = editProfileModal.querySelector('.close');
+  const toDoList = document.getElementById('to-do-list');
+  const addToDoBtn = document.getElementById('add-to-do-btn');
 
-    editProfileLink.addEventListener('click', function(e) {
-        e.preventDefault();
-        editProfileModal.style.display = 'block';
-    });
+  addToDoBtn.addEventListener('click', function() {
+      const taskDescription = prompt('Enter task description:');
+      if (taskDescription) {
+          const li = document.createElement('li');
+          li.className = 'sidebar-item';
+          li.innerHTML = `
+              <input type="checkbox">
+              <label>${taskDescription}</label>
+              <span class="sidebar-date">Date</span>
+              <span class="sidebar-tag">Tag</span>
+              <button class="delete-to-do">Delete</button>
+          `;
+          toDoList.appendChild(li);
+          addDeleteEvent(li);
+      }
+  });
 
-    closeButton.addEventListener('click', function() {
-        editProfileModal.style.display = 'none';
-    });
+  toDoList.addEventListener('click', function(event) {
+      if (event.target.classList.contains('delete-to-do')) {
+          event.target.parentElement.remove();
+      }
+  });
 
-    window.addEventListener('click', function(e) {
-        if (e.target == editProfileModal) {
-            editProfileModal.style.display = 'none';
-        }
-    });
+  function addDeleteEvent(taskItem) {
+      taskItem.querySelector('.delete-to-do').addEventListener('click', function() {
+          taskItem.remove();
+      });
+  }
 });
