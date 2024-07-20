@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TaskTrack</title>
     <link rel="stylesheet" href="dashboard.css">
+    <link rel = "stylesheet" href="taskpage.css">
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/main.min.css" rel="stylesheet">
 </head>
 <body>
@@ -155,9 +156,8 @@
             <div class="project-tasks" id="tasks-page" style="display: none;">
                 <h2>Tasks</h2>
                 <div class="task-list">
-                    <!-- Task items will be dynamically added here -->
+                    <a href="taskpage.html">Go to TASK </a> 
                 </div>
-                <button id="add-task-btn">Add Task</button>
             </div>
             <div class="project-projects" id="projects-page" style="display: none;">
                 <div class="projects-header">
@@ -303,5 +303,6 @@
         });
     </script>
     <script src="dashboard.js"></script>
+    <script src = "taskpage.js"></script>
 </body>
 </html>
