@@ -186,32 +186,36 @@
         <div class="sidebar right-sidebar">
             <div class="sidebar-header">
                 <h2>To Do Lists</h2>
-                <i class="fas fa-plus-circle"></i>
+                <i class="fas fa-plus-circle" id="add-to-do-btn"></i>
             </div>
-            <ul class="sidebar-list">
+            <ul class="sidebar-list" id="to-do-list">
                 <li class="sidebar-item">
                     <input type="checkbox" checked>
                     <label>Donate $500 to the charity</label>
                     <span class="sidebar-date">May 20, 2020</span>
                     <span class="sidebar-tag">Donations</span>
+                    <button class="delete-to-do">Delete</button>
                 </li>
                 <li class="sidebar-item">
                     <input type="checkbox">
                     <label>Do 500 pushups</label>
                     <span class="sidebar-date">May 20, 2020</span>
                     <span class="sidebar-tag">Sport</span>
+                    <button class="delete-to-do">Delete</button>
                 </li>
                 <li class="sidebar-item">
                     <input type="checkbox" checked>
                     <label>Buy new headset</label>
                     <span class="sidebar-date">May 20, 2020</span>
                     <span class="sidebar-tag">Shopping</span>
+                    <button class="delete-to-do">Delete</button>
                 </li>
                 <li class="sidebar-item">
                     <input type="checkbox">
-                    <label>Clean the room</label>
+                    <label>Submit Assignment</label>
                     <span class="sidebar-date">May 20, 2020</span>
-                    <span class="sidebar-tag">Selfcare</span>
+                    <span class="sidebar-tag">Education</span>
+                    <button class="delete-to-do">Delete</button>
                 </li>
             </ul>
         </div>
@@ -222,23 +226,46 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/main.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Set user profile
-            const profileName = document.getElementById('profile-name');
-            const profilePic = document.getElementById('profile-pic');
-            profileName.textContent = 'John Doe'; // Replace with actual user name
-            profilePic.src = 'path/to/profile-picture.jpg'; // Replace with actual profile picture path
+            // Initialize the calendar
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth'
+            });
+            calendar.render();
 
-            // Handle edit profile modal
-            const editProfileLink = document.getElementById('edit-profile');
+            // Sidebar navigation
+            const navItems = document.querySelectorAll('.nav-item');
+            const pages = {
+                overview: document.getElementById('overview-page'),
+                calendar: document.getElementById('calendar-page'),
+                activity: document.getElementById('activity-page'),
+                tasks: document.getElementById('tasks-page'),
+                projects: document.getElementById('projects-page')
+            };
+
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    item.classList.add('active');
+
+                    for (const page in pages) {
+                        pages[page].style.display = 'none';
+                    }
+                    const selectedPage = item.getAttribute('data-page');
+                    pages[selectedPage].style.display = 'block';
+                });
+            });
+
+            // Edit profile modal
             const editProfileModal = document.getElementById('editProfileModal');
-            const closeButton = editProfileModal.querySelector('.close');
+            const editProfileBtn = document.getElementById('edit-profile');
+            const closeEditProfileModal = editProfileModal.querySelector('.close');
 
-            editProfileLink.addEventListener('click', function(e) {
-                e.preventDefault();
+            editProfileBtn.addEventListener('click', function() {
                 editProfileModal.style.display = 'block';
             });
 
-            closeButton.addEventListener('click', function() {
+            closeEditProfileModal.addEventListener('click', function() {
                 editProfileModal.style.display = 'none';
             });
 
@@ -248,56 +275,90 @@
                 }
             });
 
-            // Handle navigation
-            const navItems = document.querySelectorAll('.nav-item');
-            const pages = document.querySelectorAll('[id$="-page"]');
+            // Handle add to-do modal
+            const addToDoBtn = document.getElementById('add-to-do-btn');
+            const addToDoModal = document.getElementById('addToDoModal');
+            const closeAddToDoModal = addToDoModal.querySelector('.close');
+            const addToDoForm = document.getElementById('addToDoForm');
+            const toDoList = document.getElementById('to-do-list');
 
-            navItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    const pageId = this.getAttribute('data-page') + '-page';
-                    pages.forEach(page => {
-                        page.style.display = page.id === pageId ? 'block' : 'none';
-                    });
-                    navItems.forEach(navItem => navItem.classList.remove('active'));
-                    this.classList.add('active');
-                });
+            addToDoBtn.addEventListener('click', function() {
+                addToDoModal.style.display = 'block';
             });
 
-            // Initialize calendar
-            const calendarEl = document.getElementById('calendar');
-            const calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                // Add more calendar options as needed
+            closeAddToDoModal.addEventListener('click', function() {
+                addToDoModal.style.display = 'none';
             });
-            calendar.render();
 
-            // Handle add task button
-            const addTaskBtn = document.getElementById('add-task-btn');
-            const taskList = document.querySelector('.task-list');
+            window.addEventListener('click', function(e) {
+                if (e.target == addToDoModal) {
+                    addToDoModal.style.display = 'none';
+                }
+            });
 
-            addTaskBtn.addEventListener('click', function() {
-                const taskItem = document.createElement('div');
-                taskItem.className = 'task-item';
-                taskItem.innerHTML = `
+            addToDoForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const toDoText = document.getElementById('toDoText').value;
+                const toDoDate = document.getElementById('toDoDate').value;
+                const toDoTag = document.getElementById('toDoTag').value;
+
+                const toDoItem = document.createElement('li');
+                toDoItem.className = 'sidebar-item';
+                toDoItem.innerHTML = `
                     <input type="checkbox">
-                    <span contenteditable="true">New Task</span>
-                    <button class="delete-task">Delete</button>
+                    <label>${toDoText}</label>
+                    <span class="sidebar-date">${toDoDate}</span>
+                    <span class="sidebar-tag">${toDoTag}</span>
+                    <button class="delete-to-do">Delete</button>
                 `;
-                taskList.appendChild(taskItem);
+                toDoList.appendChild(toDoItem);
 
-                const deleteBtn = taskItem.querySelector('.delete-task');
+                const deleteBtn = toDoItem.querySelector('.delete-to-do');
                 deleteBtn.addEventListener('click', function() {
-                    taskList.removeChild(taskItem);
+                    toDoList.removeChild(toDoItem);
                 });
+
+                addToDoModal.style.display = 'none';
             });
 
-            // Handle edit profile form submission
+            // Load profile information from local storage
+            const profileName = document.getElementById('profile-name');
+            const profilePic = document.getElementById('profile-pic');
+
+            profileName.textContent = localStorage.getItem('name') || 'Your Name';
+            const profilePicUrl = localStorage.getItem('profilePicture');
+            if (profilePicUrl) {
+                profilePic.src = profilePicUrl;
+            } else {
+                profilePic.src = 'default-profile-pic.png'; // Path to a default profile picture
+            }
+
             const editProfileForm = document.getElementById('editProfileForm');
             editProfileForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                const formData = new FormData(this);
-                // Here you would typically send this data to your server
-                console.log('Form submitted with data:', Object.fromEntries(formData));
+                const username = document.getElementById('username').value;
+                const name = document.getElementById('name').value;
+                const profilePicture = document.getElementById('profilePicture').files[0];
+                const newPassword = document.getElementById('newPassword').value;
+
+                localStorage.setItem('username', username);
+                localStorage.setItem('name', name);
+
+                if (profilePicture) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        localStorage.setItem('profilePicture', e.target.result);
+                        profilePic.src = e.target.result;
+                    };
+                    reader.readAsDataURL(profilePicture);
+                }
+
+                if (newPassword) {
+                    localStorage.setItem('password', newPassword);
+                }
+
+                profileName.textContent = name;
+
                 editProfileModal.style.display = 'none';
             });
         });
