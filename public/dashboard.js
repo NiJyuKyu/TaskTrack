@@ -81,6 +81,87 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });  
 
+document.addEventListener('DOMContentLoaded', function() {
+  // Set user profile
+  const profileName = document.getElementById('profile-name');
+  const profilePic = document.getElementById('profile-pic');
+  profileName.textContent = 'John Doe'; // Replace with actual user name
+  profilePic.src = 'path/to/profile-picture.jpg'; // Replace with actual profile picture path
+
+  // Handle edit profile modal
+  const editProfileLink = document.getElementById('edit-profile');
+  const editProfileModal = document.getElementById('editProfileModal');
+  const closeButton = editProfileModal.querySelector('.close');
+
+  editProfileLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      editProfileModal.style.display = 'block';
+  });
+
+  closeButton.addEventListener('click', function() {
+      editProfileModal.style.display = 'none';
+  });
+
+  window.addEventListener('click', function(e) {
+      if (e.target == editProfileModal) {
+          editProfileModal.style.display = 'none';
+      }
+  });
+
+  // Handle navigation
+  const navItems = document.querySelectorAll('.nav-item');
+  const pages = document.querySelectorAll('[id$="-page"]');
+
+  navItems.forEach(item => {
+      item.addEventListener('click', function() {
+          const pageId = this.getAttribute('data-page') + '-page';
+          pages.forEach(page => {
+              page.style.display = page.id === pageId ? 'block' : 'none';
+          });
+          navItems.forEach(navItem => navItem.classList.remove('active'));
+          this.classList.add('active');
+      });
+  });
+
+  // Initialize calendar
+  const calendarEl = document.getElementById('calendar');
+  const calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      // Add more calendar options as needed
+  });
+  calendar.render();
+
+  // Handle add task button
+  const addTaskBtn = document.getElementById('add-task-btn');
+  const taskList = document.querySelector('.task-list');
+
+  addTaskBtn.addEventListener('click', function() {
+      const taskItem = document.createElement('div');
+      taskItem.className = 'task-item';
+      taskItem.innerHTML = `
+          <input type="checkbox">
+          <span contenteditable="true">New Task</span>
+          <button class="delete-task">Delete</button>
+      `;
+      taskList.appendChild(taskItem);
+
+      const deleteBtn = taskItem.querySelector('.delete-task');
+      deleteBtn.addEventListener('click', function() {
+          taskList.removeChild(taskItem);
+      });
+  });
+
+  // Handle edit profile form submission
+  const editProfileForm = document.getElementById('editProfileForm');
+  editProfileForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      // Here you would typically send this data to your server
+      console.log('Form submitted with data:', Object.fromEntries(formData));
+      editProfileModal.style.display = 'none';
+  });
+});
+
 navItems = document.querySelectorAll('.nav-item');
 pageContainers = document.querySelectorAll('.project-overview, .project-calendar, .project-activity, .project-projects, .project-tasks');
 
@@ -107,74 +188,6 @@ navItems.forEach(item => {
     });
   });
 });
-
-// Function to render tasks on the tasks page
-function renderTasks() {
-  const taskList = document.querySelector('.task-list');
-  taskList.innerHTML = ''; // Clear previous tasks
-
-  // Example data, replace with your own tasks array or fetch from a server
-  const tasks = [
-    { id: 1, title: 'Task 1', description: 'Description for Task 1' },
-    { id: 2, title: 'Task 2', description: 'Description for Task 2' },
-    { id: 3, title: 'Task 3', description: 'Description for Task 3' }
-  ];
-
-  tasks.forEach(task => {
-    const taskItem = document.createElement('div');
-    taskItem.classList.add('task-item');
-    taskItem.innerHTML = `
-      <h3>${task.title}</h3>
-      <p>${task.description}</p>
-      <div>
-        <button class="edit-task-btn" data-id="${task.id}">Edit</button>
-        <button class="delete-task-btn" data-id="${task.id}">Delete</button>
-      </div>
-    `;
-    taskList.appendChild(taskItem);
-  });
-
-  // Event listener for adding a new task
-  const addTaskBtn = document.getElementById('add-task-btn');
-  addTaskBtn.addEventListener('click', () => {
-    const title = prompt('Enter task title:');
-    if (title) {
-      const newTask = {
-        id: tasks.length + 1,
-        title,
-        description: '' // You can prompt for description as well
-      };
-      tasks.push(newTask);
-      renderTasks();
-    }
-  });
-
-  // Event listeners for edit and delete task buttons (example)
-  const editButtons = document.querySelectorAll('.edit-task-btn');
-  editButtons.forEach(button => {
-    button.addEventListener('click', (event) => {
-      const taskId = parseInt(event.target.dataset.id);
-      const taskToEdit = tasks.find(task => task.id === taskId);
-      const newTitle = prompt('Enter new task title:', taskToEdit.title);
-      if (newTitle) {
-        taskToEdit.title = newTitle;
-        renderTasks();
-      }
-    });
-  });
-
-  const deleteButtons = document.querySelectorAll('.delete-task-btn');
-  deleteButtons.forEach(button => {
-    button.addEventListener('click', (event) => {
-      const taskId = parseInt(event.target.dataset.id);
-      const taskIndex = tasks.findIndex(task => task.id === taskId);
-      if (taskIndex !== -1) {
-        tasks.splice(taskIndex, 1);
-        renderTasks();
-      }
-    });
-  });
-}
 
 // Initially show the overview page
 pageContainers.forEach(container => {
@@ -348,74 +361,4 @@ document.addEventListener('DOMContentLoaded', function() {
             editProfileModal.style.display = 'none';
         }
     });
-});
-
-// Task Manager Component
-class TaskManager {
-  constructor() {
-      this.taskList = document.getElementById('taskList');
-      this.addTaskButton = document.getElementById('addTaskButton');
-      this.tasks = [
-          { name: 'Welcome Page', assignee: 'KG', dueDate: 'Mar 8', priority: 'High', status: 'Complete' },
-          { name: 'Sign In', assignee: 'CP', dueDate: 'Mar 8', priority: 'High', status: 'Complete' },
-          { name: 'Sign Up', assignee: 'ER', dueDate: 'Mar 8', priority: 'High', status: 'Complete' },
-          { name: 'User Authentication', assignee: 'AG', dueDate: 'Mar 8', priority: 'High', status: 'Complete' },
-          { name: 'Verification', assignee: 'JP', dueDate: 'Mar 8', priority: 'High', status: 'Complete' },
-          { name: 'Forgot Password', assignee: 'JI', dueDate: 'Mar 8', priority: 'High', status: 'Complete' },
-      ];
-
-      this.renderTasks();
-      this.addEventListeners();
-  }
-
-  renderTasks() {
-      this.taskList.innerHTML = '';
-      this.tasks.forEach((task, index) => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-              <td>${task.name}</td>
-              <td>${task.assignee}</td>
-              <td>${task.dueDate}</td>
-              <td>${task.priority}</td>
-              <td>${task.status}</td>
-              <td><button class="delete" data-index="${index}">Delete</button></td>
-          `;
-          this.taskList.appendChild(row);
-      });
-  }
-
-  addEventListeners() {
-      this.taskList.addEventListener('click', (e) => {
-          if (e.target.classList.contains('delete')) {
-              const index = e.target.getAttribute('data-index');
-              this.tasks.splice(index, 1);
-              this.renderTasks();
-          }
-      });
-
-      this.addTaskButton.addEventListener('click', () => {
-          const name = prompt('Task Name:');
-          const assignee = prompt('Assignee:');
-          const dueDate = prompt('Due Date:');
-          const priority = prompt('Priority:');
-          const status = prompt('Status:');
-
-          if (name && assignee && dueDate && priority && status) {
-              this.tasks.push({ name, assignee, dueDate, priority, status });
-              this.renderTasks();
-          } else {
-              alert('All fields are required!');
-          }
-      });
-  }
-}
-
-// Initialize Task Manager when the tasks page is shown
-navItems.forEach(item => {
-  item.addEventListener('click', () => {
-      const page = item.dataset.page;
-      if (page === 'tasks') {
-          new TaskManager();
-      }
-  });
 });

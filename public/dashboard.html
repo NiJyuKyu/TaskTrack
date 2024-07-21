@@ -10,7 +10,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="sidebar">
+        <div class="sidebar-left">
             <div class="logo">
                 <div class="tasktrack">TaskTrack</div>
             </div>
@@ -82,30 +82,41 @@
         <div class="main-content">
             <div class="project-tasks" id="tasks-page" style="display: none;">
                 <h2>Tasks</h2>
-                <div id="taskManagerComponent" class="task-manager">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Assignee</th>
-                                <th>Due date</th>
-                                <th>Priority</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="taskList">
-                            <!-- Tasks will be dynamically added here -->
-                        </tbody>
-                    </table>
-                    <button id="addTaskButton">Add Task</button>
+                <div class="task-form">
+                    <input type="text" id="taskName" placeholder="Task name" required>
+                    <input type="text" id="assignee" placeholder="Assignee" required>
+                    <input type="date" id="dueDate" required>
+                    <select id="priority">
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                    <select id="status">
+                        <option value="To Do" selected>To Do</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Done">Done</option>
+                    </select>
+                    <button id="addTaskBtn">Add Task</button>
                 </div>
+                <table id="taskTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Assignee</th>
+                            <th>Due Date</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="taskList"></tbody>
+                </table>
             </div>
             <div class="project-calendar" id="calendar-page" style="display: none;">
                 <div id="calendar"></div>
             </div>
         </div>
-        <div class="sidebar right-sidebar">
+        <div class="sidebar-right">
             <div class="sidebar-header">
                 <h2>To Do Lists</h2>
                 <i class="fas fa-plus-circle"></i>
@@ -142,89 +153,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/main.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Set user profile
-            const profileName = document.getElementById('profile-name');
-            const profilePic = document.getElementById('profile-pic');
-            profileName.textContent = 'John Doe'; // Replace with actual user name
-            profilePic.src = 'path/to/profile-picture.jpg'; // Replace with actual profile picture path
-
-            // Handle edit profile modal
-            const editProfileLink = document.getElementById('edit-profile');
-            const editProfileModal = document.getElementById('editProfileModal');
-            const closeButton = editProfileModal.querySelector('.close');
-
-            editProfileLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                editProfileModal.style.display = 'block';
-            });
-
-            closeButton.addEventListener('click', function() {
-                editProfileModal.style.display = 'none';
-            });
-
-            window.addEventListener('click', function(e) {
-                if (e.target == editProfileModal) {
-                    editProfileModal.style.display = 'none';
-                }
-            });
-
-            // Handle navigation
-            const navItems = document.querySelectorAll('.nav-item');
-            const pages = document.querySelectorAll('[id$="-page"]');
-
-            navItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    const pageId = this.getAttribute('data-page') + '-page';
-                    pages.forEach(page => {
-                        page.style.display = page.id === pageId ? 'block' : 'none';
-                    });
-                    navItems.forEach(navItem => navItem.classList.remove('active'));
-                    this.classList.add('active');
-                });
-            });
-
-            // Initialize calendar
-            const calendarEl = document.getElementById('calendar');
-            const calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                // Add more calendar options as needed
-            });
-            calendar.render();
-
-            // Handle add task button
-            const addTaskBtn = document.getElementById('add-task-btn');
-            const taskList = document.querySelector('.task-list');
-
-            addTaskBtn.addEventListener('click', function() {
-                const taskItem = document.createElement('div');
-                taskItem.className = 'task-item';
-                taskItem.innerHTML = `
-                    <input type="checkbox">
-                    <span contenteditable="true">New Task</span>
-                    <button class="delete-task">Delete</button>
-                `;
-                taskList.appendChild(taskItem);
-
-                const deleteBtn = taskItem.querySelector('.delete-task');
-                deleteBtn.addEventListener('click', function() {
-                    taskList.removeChild(taskItem);
-                });
-            });
-
-            // Handle edit profile form submission
-            const editProfileForm = document.getElementById('editProfileForm');
-            editProfileForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const formData = new FormData(this);
-                // Here you would typically send this data to your server
-                console.log('Form submitted with data:', Object.fromEntries(formData));
-                editProfileModal.style.display = 'none';
-            });
-        });
-    </script>
     <script src="dashboard.js"></script>
-    <script src = "taskpage.js"></script>
+    <script src="taskpage.js"></script>
 </body>
 </html>

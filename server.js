@@ -12,6 +12,7 @@ const SECRET_KEY = 'your_secret_key';
 
 // Middleware
 app.use(bodyParser.json());
+app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Configure multer for file uploads
@@ -152,3 +153,16 @@ const taskRoutes = require('./routes/tasks');
 
 // Use routes
 app.use('/api', taskRoutes);
+
+app.post('/api/tasks', async (req, res) => {
+    try {
+      const task = new Task(req.body);
+      await task.save();
+      res.json(task);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+const cors = require('cors');
+app.use(cors());
