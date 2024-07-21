@@ -349,3 +349,73 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// Task Manager Component
+class TaskManager {
+  constructor() {
+      this.taskList = document.getElementById('taskList');
+      this.addTaskButton = document.getElementById('addTaskButton');
+      this.tasks = [
+          { name: 'Welcome Page', assignee: 'KG', dueDate: 'Mar 8', priority: 'High', status: 'Complete' },
+          { name: 'Sign In', assignee: 'CP', dueDate: 'Mar 8', priority: 'High', status: 'Complete' },
+          { name: 'Sign Up', assignee: 'ER', dueDate: 'Mar 8', priority: 'High', status: 'Complete' },
+          { name: 'User Authentication', assignee: 'AG', dueDate: 'Mar 8', priority: 'High', status: 'Complete' },
+          { name: 'Verification', assignee: 'JP', dueDate: 'Mar 8', priority: 'High', status: 'Complete' },
+          { name: 'Forgot Password', assignee: 'JI', dueDate: 'Mar 8', priority: 'High', status: 'Complete' },
+      ];
+
+      this.renderTasks();
+      this.addEventListeners();
+  }
+
+  renderTasks() {
+      this.taskList.innerHTML = '';
+      this.tasks.forEach((task, index) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+              <td>${task.name}</td>
+              <td>${task.assignee}</td>
+              <td>${task.dueDate}</td>
+              <td>${task.priority}</td>
+              <td>${task.status}</td>
+              <td><button class="delete" data-index="${index}">Delete</button></td>
+          `;
+          this.taskList.appendChild(row);
+      });
+  }
+
+  addEventListeners() {
+      this.taskList.addEventListener('click', (e) => {
+          if (e.target.classList.contains('delete')) {
+              const index = e.target.getAttribute('data-index');
+              this.tasks.splice(index, 1);
+              this.renderTasks();
+          }
+      });
+
+      this.addTaskButton.addEventListener('click', () => {
+          const name = prompt('Task Name:');
+          const assignee = prompt('Assignee:');
+          const dueDate = prompt('Due Date:');
+          const priority = prompt('Priority:');
+          const status = prompt('Status:');
+
+          if (name && assignee && dueDate && priority && status) {
+              this.tasks.push({ name, assignee, dueDate, priority, status });
+              this.renderTasks();
+          } else {
+              alert('All fields are required!');
+          }
+      });
+  }
+}
+
+// Initialize Task Manager when the tasks page is shown
+navItems.forEach(item => {
+  item.addEventListener('click', () => {
+      const page = item.dataset.page;
+      if (page === 'tasks') {
+          new TaskManager();
+      }
+  });
+});

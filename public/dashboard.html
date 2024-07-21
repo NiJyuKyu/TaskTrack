@@ -80,107 +80,29 @@
             </div>
         </div>
         <div class="main-content">
-            <div class="header">
-                <div class="project-title">
-                    <div class="project-name">Inventory System</div>
-                    <div class="project-details">
-                        <div class="project-status">Projects</div>
-                        <div class="project-status">Team projects</div>
-                        <div class="project-status">Incomplete</div>
-                    </div>
-                </div>
-                <div class="options">
-                    <i class="fas fa-ellipsis-h"></i>
-                </div>
-            </div>
-            <div class="project-overview" id="overview-page">
-                <div class="project-info">
-                    <div class="project-header">
-                        <div class="project-name">Cloth</div>
-                        <div class="project-description">Small and Concise headline</div>
-                    </div>
-                    <div class="project-details">
-                        <div class="detail-item">
-                            <label>Created At</label>
-                            <span>May, 15 2022 14:23 PM</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Created</label>
-                            <span>Mar 23, 10:34 PM</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Deadline</label>
-                            <span>Jun 02, 04:01PM</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Tracked Time</label>
-                            <span>10H 32M</span>
-                        </div>
-                    </div>
-                    <div class="project-description">
-                        TaskTrack is an intuitive task management system designed to help teams collaborate and manage their projects with ease. It offers powerful features such as task tracking, project organization, scheduling, and communication tools to keep teams organized and on top of their projects.
-                    </div>
-                </div>
-                <div class="project-sidebar">
-                    <div class="sidebar-item">
-                        <label>Tags</label>
-                        <div class="tag-list">
-                            <span class="tag">Profitable</span>
-                            <span class="tag">Ai</span>
-                            <span class="tag">1 Person</span>
-                        </div>
-                    </div>
-                    <div class="sidebar-item">
-                        <label>Assign</label>
-                        <span class="assignee">@mustafa</span>
-                    </div>
-                    <div class="sidebar-item">
-                        <label>Group</label>
-                        <div class="group-list">
-                            <span class="group">Team projects</span>
-                            <span class="group">Fashion</span>
-                        </div>
-                    </div>
-                    <div class="sidebar-item">
-                        <label>Priority</label>
-                        <span class="priority">Small</span>
-                    </div>
+            <div class="project-tasks" id="tasks-page" style="display: none;">
+                <h2>Tasks</h2>
+                <div id="taskManagerComponent" class="task-manager">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Assignee</th>
+                                <th>Due date</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="taskList">
+                            <!-- Tasks will be dynamically added here -->
+                        </tbody>
+                    </table>
+                    <button id="addTaskButton">Add Task</button>
                 </div>
             </div>
             <div class="project-calendar" id="calendar-page" style="display: none;">
                 <div id="calendar"></div>
-            </div>
-            <div class="project-activity" id="activity-page" style="display: none;">
-                <!-- Activity content -->
-            </div>
-            <div class="project-tasks" id="tasks-page" style="display: none;">
-                <h2>Tasks</h2>
-                <div class="task-list">
-                    <a href="taskpage.html">Go to TASK </a> 
-                </div>
-            </div>
-            <div class="project-projects" id="projects-page" style="display: none;">
-                <div class="projects-header">
-                    <h2>Projects</h2>
-                    <i class="fas fa-plus-circle"></i>
-                </div>
-                <ul class="projects-list">
-                    <li class="project-item" data-project="flower-shop">
-                        <div class="project-icon"><i class="fas fa-flower"></i></div>
-                        <div class="project-name">Flower Shop</div>
-                        <div class="project-progress">23</div>
-                    </li>
-                    <li class="project-item" data-project="cloth">
-                        <div class="project-icon"><i class="fas fa-tshirt"></i></div>
-                        <div class="project-name">Cloth</div>
-                        <div class="project-progress">345</div>
-                    </li>
-                    <li class="project-item" data-project="gamer-boy">
-                        <div class="project-icon"><i class="fas fa-gamepad"></i></div>
-                        <div class="project-name">Gamer Boy</div>
-                        <div class="project-progress">568</div>
-                    </li>
-                </ul>
             </div>
         </div>
         <div class="sidebar right-sidebar">
