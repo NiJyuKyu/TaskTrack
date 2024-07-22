@@ -1,32 +1,48 @@
 body {
   font-family: 'Arial', sans-serif;
-  background-color: #dc5151;
   margin: 0;
+  padding: 0;
+  background-color: #f0f0f0;
   display: flex;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
-  background: url('images/aestheticsky.jpg') no-repeat;
+  background: url('images/aestheticsky.jpg') no-repeat center center fixed;
   background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
 }
 
 .container {
   display: flex;
+  flex: 1;
 }
 
-.sidebar {
+.sidebar-left {
   width: 250px;
-  background-color: #4c1c1c29;
+  background-color: rgba(76, 28, 28, 0.16);
   padding: 20px;
   box-shadow: 0 2px 4px rgba(139, 6, 6, 0.733);
   height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
   backdrop-filter: blur(5px);
+  overflow-y: auto;
+}
+
+.sidebar-right {
+  width: 250px;
+  background-color: rgba(76, 28, 28, 0.16);
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(139, 6, 6, 0.733);
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  right: 0;
+  backdrop-filter: blur(5px);
+  overflow-y: auto;
 }
 
 .main-content {
   flex: 1;
+  margin: 0 270px; /* Adjust for both sidebars */
   padding: 20px;
 }
 
@@ -395,7 +411,9 @@ body {
   display: block;
 }
 
-.dropdown-content a:hover {background-color: #f1f1f1}
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
 
 .dropdown:hover .dropdown-content {
   display: block;
@@ -414,15 +432,17 @@ body {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgba(0,0,0,0.4);
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
   background-color: #fefefe;
-  margin: 15% auto;
+  margin: 5% auto;
   padding: 20px;
   border: 1px solid #888;
   width: 80%;
+  max-width: 600px;
+  border-radius: 10px;
 }
 
 .close {
@@ -439,78 +459,129 @@ body {
   cursor: pointer;
 }
 
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.btn-save {
-  background-color: #4CAF50;
+button {
+  background-color: #d61212;
   color: white;
-  padding: 10px 15px;
   border: none;
-  border-radius: 4px;
+  padding: 10px 20px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
 }
 
-.btn-save:hover {
-  background-color: #45a049;
+button:hover {
+  background-color: #bb0d0d;
 }
 
-/* Task Manager Component Styles */
-.task-manager {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  margin-top: 20px;
+button:focus {
+  outline: none;
 }
 
-.task-manager table {
+.input-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.input-group label {
+  flex: 0 0 100px;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #120f0f;
+  border-radius: 5px;
+}
+
+.textarea {
+  resize: none;
+  height: 100px;
+}
+
+/* New CSS for Task Table */
+.table-container {
+  margin: 20px auto;
+  max-width: 1200px;
+  overflow-x: auto;
+  background-color: #e51d1d;
+}
+
+table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
 }
 
-.task-manager table, .task-manager th, .task-manager td {
-  border: 1px solid #ddd;
+thead {
+  background-color: #fff;
+  color: #da1d1d;
 }
 
-.task-manager th, .task-manager td {
-  padding: 8px;
+thead th {
+  padding: 15px;
   text-align: left;
+  font-size: 16px;
+  text-transform: uppercase;
 }
 
-.task-manager th {
-  background-color: #f2f2f2;
+tbody tr {
+  border-bottom: 1px solid #ddd;
+  transition: background-color 0.3s;
 }
 
-.task-manager button {
-  padding: 8px 12px;
-  margin-top: 10px;
-  cursor: pointer;
+tbody tr:hover {
+  background-color: #f9f9f9;
 }
 
-.task-manager button.delete {
-  background-color: #e74c3c;
-  color: #fff;
+tbody td {
+  padding: 15px;
+  font-size: 14px;
+  color: #333;
+}
+
+.edit-btn,
+.delete-btn {
+  background-color: transparent;
   border: none;
-  border-radius: 4px;
+  cursor: pointer;
+  transition: color 0.3s;
 }
 
-.task-manager button.delete:hover {
-  background-color: #c0392b;
+.edit-btn:hover {
+  color: #4CAF50; /* Green color */
+}
+
+.delete-btn:hover {
+  color: #f44336; /* Red color */
+}
+
+.task-status {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.task-status.not-started {
+  background-color: #ffc107; /* Yellow */
+  color: #fff;
+}
+
+.task-status.in-progress {
+  background-color: #17a2b8; /* Blue */
+  color: #fff;
+}
+
+.task-status.completed {
+  background-color: #28a745; /* Green */
+  color: #fff;
 }
