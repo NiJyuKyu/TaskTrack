@@ -1,0 +1,533 @@
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #dc5151;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: url('images/aestheticsky.jpg') no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.container {
+  display: flex;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #4c1c1c29;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(139, 6, 6, 0.733);
+  height: 100vh;
+  backdrop-filter: blur(5px);
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.tasktrack {
+  font-size: 24px;
+  font-weight: bold;
+  color: #f30404;
+}
+
+.nav {
+  list-style: none;
+  padding: 0;
+}
+
+.nav-item {
+  display: block;
+  padding: 10px 15px;
+  border-bottom: 1px solid #ae2929;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.nav-item.active {
+  background-color: #d61212;
+}
+
+.nav-item i {
+  margin-right: 10px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.project-title {
+  display: flex;
+  align-items: center;
+}
+
+.project-name {
+  font-size: 20px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.project-details {
+  display: flex;
+  align-items: center;
+}
+
+.project-status {
+  padding: 5px 10px;
+  border-radius: 20px;
+  background-color: #f0f0f0;
+  margin-right: 5px;
+  font-size: 14px;
+}
+
+.project-overview,
+.feature-content {
+  display: none;
+}
+
+.feature-content.active {
+  display: block;
+}
+
+#calendar {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+#calendar h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#tasks-page {
+  padding: 20px;
+}
+
+#tasks-page h2 {
+  margin-top: 0;
+}
+
+#tasks-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-gap: 20px;
+}
+
+.task-card {
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.task-card:hover {
+  transform: translateY(-5px);
+}
+
+.task-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.task-description {
+  margin-bottom: 10px;
+}
+
+.task-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.edit-task-btn,
+.delete-task-btn {
+  background-color: transparent;
+  border: none;
+  color: #333;
+  font-size: 16px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.edit-task-btn:hover,
+.delete-task-btn:hover {
+  color: #f00;
+}
+
+.project-info {
+  flex: 1;
+}
+
+.project-sidebar {
+  width: 300px;
+}
+
+.project-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.project-description {
+  margin-bottom: 10px;
+}
+
+.project-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+}
+
+.detail-item label {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.detail-item span {
+  font-size: 14px;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.sidebar-item-date {
+  margin-left: auto;
+  font-size: 12px;
+  color: #888;
+}
+
+.sidebar-item-tags {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.sidebar-item-tag {
+  padding: 5px 10px;
+  border-radius: 20px;
+  background-color: #f0f0f0;
+  margin-right: 5px;
+  font-size: 12px;
+}
+
+.note-list {
+  margin-top: 30px;
+}
+
+
+
+.note-item {
+  background-color: #fff;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  border: 1px solid #ddd; }
+
+.note-header {
+  display: none;
+}
+
+.note-date {
+  font-size: 12px;
+  color: #888;
+}
+
+.note-content {
+  margin-bottom: 10px;
+}
+
+.note-tags {
+  display: flex;
+  align-items: center;
+}
+
+.note-tag {
+  padding: 5px 10px;
+  border-radius: 20px;
+  background-color: #f0f0f0;
+  margin-right: 20px;
+  font-size: 12px;
+}
+
+.delete-icon {
+  font-size:50px; /* Adjust size as needed */
+  color: #f00; /* Red color for delete icon */
+  cursor: pointer;
+  transition: color 0.3s;
+  margin-left: 500px; 
+}
+
+.delete-icon:hover {
+  color: #d00; /* Darker red on hover */
+}
+
+#note-modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+  padding-top: 60px;
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#notes-list .note-item h3 {
+  margin: 0;
+}
+
+#notes-list .note-item i {
+  cursor: pointer;
+  margin-left: 10px;
+  font-size: 30px; /* Increase icon size if needed */
+  padding: 20px;
+}
+
+#open-note-modal {
+  display: block;
+  margin: 20px 0;
+}
+
+.options {
+  display: flex;
+  align-items: center;
+}
+
+.options i {
+  font-size: 50px;
+  color: #888;
+  cursor: pointer;
+}
+
+.projects-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.projects-list {
+  list-style: none;
+  padding: 0;
+}
+
+.project-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.project-icon {
+  margin-right: 10px;
+}
+
+.project-icon i {
+  font-size: 20px;
+}
+
+.project-name {
+  font-size: 16px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.project-progress {
+  margin-left: auto;
+  font-size: 14px;
+  color: #888;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  width: calc(100% - 40px);
+}
+
+.profile-pic {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-name {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropbtn {
+  background-color: #f1f1f1;
+  color: black;
+  padding: 5px;
+  font-size: 12px;
+  border: none;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 100px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  top: 30px;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 10px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown:hover .dropbtn {
+  background-color: #ddd;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.btn-save {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.btn-save:hover {
+  background-color: #45a049;
+}
