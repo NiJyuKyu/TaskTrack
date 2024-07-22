@@ -163,6 +163,3 @@ app.post('/api/tasks', async (req, res) => {
       res.status(400).json({ message: error.message });
     }
   });
-
-const cors = require('cors');
-app.use(cors());
