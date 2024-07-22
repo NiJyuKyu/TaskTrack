@@ -1,118 +1,94 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const addTaskBtn = document.getElementById('addTaskBtn');
-    if (addTaskBtn) {
-        addTaskBtn.addEventListener('click', addTask);
-    } else {
-        console.error('Add Task button not found');
-    }
-    fetchTasks();
-});
-
-const API_URL = 'http://localhost:5000/api/tasks';
-
-// Fetch tasks from the server
-async function fetchTasks() {
-    try {
-        const response = await fetch(API_URL);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const tasks = await response.json();
-        displayTasks(tasks);
-    } catch (error) {
-        console.error("Could not fetch tasks:", error);
-        alert("Failed to load tasks. Please try again later.");
-    }
-}
-
-// Display tasks in the table
-function displayTasks(tasks) {
+document.addEventListener('DOMContentLoaded', () => {
     const taskList = document.getElementById('taskList');
-    taskList.innerHTML = '';
-    tasks.forEach(task => {
-        const row = createTaskRow(task);
-        taskList.innerHTML += row;
+    const addTaskButton = document.getElementById('addTaskButton');
+    const updateTaskModal = document.getElementById('updateTaskModal');
+    const updateTaskName = document.getElementById('updateTaskName');
+    const updateTaskAssignee = document.getElementById('updateTaskAssignee');
+    const updateTaskDueDate = document.getElementById('updateTaskDueDate');
+    const updateTaskPriority = document.getElementById('updateTaskPriority');
+    const updateTaskStatus = document.getElementById('updateTaskStatus');
+    const saveUpdateButton = document.getElementById('saveUpdateButton');
+    const cancelUpdateButton = document.getElementById('cancelUpdateButton');
+    let currentTaskIndex = null;
+
+    const tasks = [
+        { name: 'Welcome Page', assignee: 'Celestra', dueDate: 'June 26', priority: 'High', status: 'complete' },
+        { name: 'Sign In', assignee: 'Celestra', dueDate: 'June 30', priority: 'High', status: 'complete' },
+        { name: 'Sign Up', assignee: 'Penional', dueDate: 'June 31', priority: 'High', status: 'complete' },
+        { name: 'User Authentication', assignee: 'Quinones', dueDate: 'July 1', priority: 'High', status: 'complete' }
+    ];
+
+    const renderTasks = () => {
+        taskList.innerHTML = '';
+        tasks.forEach((task, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${task.name}</td>
+                <td>${task.assignee}</td>
+                <td>${task.dueDate}</td>
+                <td>${task.priority}</td>
+                <td>${task.status}</td>
+                <td>
+                    <button class="update" data-index="${index}">Update</button>
+                    <button class="delete" data-index="${index}">Delete</button>
+                </td>
+            `;
+            taskList.appendChild(row);
+        });
+    };
+
+    taskList.addEventListener('click', (e) => {
+        const index = e.target.getAttribute('data-index');
+        if (e.target.classList.contains('delete')) {
+            tasks.splice(index, 1);
+            renderTasks();
+        } else if (e.target.classList.contains('update')) {
+            openUpdateModal(index);
+        }
     });
-}
 
-// Create a task row
-function createTaskRow(task) {
-    return `
-        <tr>
-            <td>${task.name}</td>
-            <td>${task.assignee}</td>
-            <td>${new Date(task.dueDate).toLocaleDateString()}</td>
-            <td>${task.priority}</td>
-            <td>${task.status}</td>
-            <td><button class="delete-btn" onclick="deleteTask('${task._id}')">Delete</button></td>
-        </tr>
-    `;
-}
+    addTaskButton.addEventListener('click', () => {
+        const name = prompt('Task Name:');
+        const assignee = prompt('Assignee:');
+        const dueDate = prompt('Due Date:');
+        const priority = prompt('Priority:');
+        const status = prompt('Status (to-do, incomplete, complete):');
 
-// Add a new task
-async function addTask() {
-    const name = document.getElementById('taskName').value.trim();
-    const assignee = document.getElementById('assignee').value.trim();
-    const dueDate = document.getElementById('dueDate').value;
-    const priority = document.getElementById('priority').value;
-    const status = document.getElementById('status').value;
-
-    if (!name || !assignee || !dueDate) {
-        alert('Please fill in all required fields');
-        return;
-    }
-
-    try {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ name, assignee, dueDate, priority, status }),
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        if (name && assignee && dueDate && priority && status) {
+            tasks.push({ name, assignee, dueDate, priority, status });
+            renderTasks();
+        } else {
+            alert('All fields are required!');
         }
+    });
 
-        const newTask = await response.json();
-        console.log('Task added successfully:', newTask);
+    const openUpdateModal = (index) => {
+        currentTaskIndex = index;
+        const task = tasks[index];
+        updateTaskName.value = task.name;
+        updateTaskAssignee.value = task.assignee;
+        updateTaskDueDate.value = task.dueDate;
+        updateTaskPriority.value = task.priority;
+        updateTaskStatus.value = task.status;
+        updateTaskModal.style.display = 'block';
+    };
 
-        // Append the new task to the table
-        const taskList = document.getElementById('taskList');
-        const row = createTaskRow(newTask);
-        taskList.innerHTML += row;
-
-        clearForm();
-    } catch (error) {
-        console.error('Error adding task:', error);
-        alert('An error occurred while adding the task. Please try again.');
-    }
-}
-
-// Delete a task
-async function deleteTask(id) {
-    try {
-        const response = await fetch(`${API_URL}/${id}`, {
-            method: 'DELETE',
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+    saveUpdateButton.addEventListener('click', () => {
+        if (currentTaskIndex !== null) {
+            const task = tasks[currentTaskIndex];
+            task.name = updateTaskName.value;
+            task.assignee = updateTaskAssignee.value;
+            task.dueDate = updateTaskDueDate.value;
+            task.priority = updateTaskPriority.value;
+            task.status = updateTaskStatus.value;
+            renderTasks();
+            updateTaskModal.style.display = 'none';
         }
+    });
 
-        await fetchTasks();
-    } catch (error) {
-        console.error('Error deleting task:', error);
-        alert('An error occurred while deleting the task. Please try again.');
-    }
-}
+    cancelUpdateButton.addEventListener('click', () => {
+        updateTaskModal.style.display = 'none';
+    });
 
-// Clear the form after adding a task
-function clearForm() {
-    document.getElementById('taskName').value = '';
-    document.getElementById('assignee').value = '';
-    document.getElementById('dueDate').value = '';
-    document.getElementById('priority').value = 'High';
-    document.getElementById('status').value = 'Incomplete';
-}
+    renderTasks();
+});
