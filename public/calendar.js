@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Close the modal if user clicks outside of it
     window.onclick = (event) => {
-        if (event.target == eventModal) {
+        if (event.target === eventModal) {
             eventModal.style.display = 'none';
         }
     };
@@ -40,13 +40,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const firstDayOfMonth = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-        currentMonth.textContent = `${today.toLocaleString('default', { month: 'long' })} ${year}`;
+        currentMonth.textContent = `${new Date(year, month).toLocaleString('default', { month: 'long' })} ${year}`;
 
         // Fill in the blanks for days from previous month
         for (let i = 0; i < firstDayOfMonth; i++) {
-            const emptyDiv = document.createElement('div');
-            emptyDiv.classList.add('day');
-            calendar.appendChild(emptyDiv);
+            calendar.appendChild(document.createElement('div')).classList.add('day');
         }
 
         // Fill in the days for the current month
@@ -66,10 +64,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const title = eventTitle.value;
         if (date && title) {
             const dayDiv = document.querySelector(`.day[data-date='${date}']`);
-            const eventDiv = document.createElement('div');
-            eventDiv.classList.add('event');
-            eventDiv.innerText = title;
-            dayDiv.appendChild(eventDiv);
+            if (dayDiv) {
+                const eventDiv = document.createElement('div');
+                eventDiv.classList.add('event');
+                eventDiv.innerText = title;
+                dayDiv.appendChild(eventDiv);
+            }
             eventForm.reset();
             eventModal.style.display = 'none';
         }
