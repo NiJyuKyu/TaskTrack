@@ -180,3 +180,240 @@
     <script src="to-do-list.js"></script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskTrack</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel = "stylesheet" href="calendar.css">
+    <link rel = "stylesheet" href="taskpage.css">
+    <link rel = "stylesheet" href="to-do.css">
+    <link rel = "stylesheet" href="note.css">
+    <link rel="stylesheet" href="overview.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar-left">
+            <div class="logo">
+                <div class="tasktrack">TaskTrack</div>
+            </div>
+            <ul class="nav">
+                <li class="nav-item active" data-page="overview">
+                    <i class="fas fa-list"></i>
+                    Overview
+                </li>
+                <li class="nav-item" data-page="calendar">
+                    <i class="fas fa-calendar-alt"></i>
+                    Calendar
+                </li>
+                <li class="nav-item" data-page="activity">
+                    <i class="fas fa-history"></i>
+                    Activity/History
+                </li>
+                <li class="nav-item" data-page="tasks">
+                    <i class="fas fa-tasks"></i>
+                    Task
+                </li>
+                <div class="sidebar-notes">
+                    <h2>Notes</h2>
+                        <textarea id="notes-input" rows="4" placeholder="Enter your notes here..."></textarea>
+                        <button id="add-notes-button">Add Notes</button>
+                </div>
+            </ul>
+            <div class="profile">
+                <img src="profile-pic-placeholder.png" alt="Profile Picture" id="profile-pic" class="profile-pic">
+                <div class="profile-info">
+                    <span id="profile-name" class="profile-name">User Name</span>
+                    <div class="dropdown">
+                        <button class="dropbtn">Profile Options</button>
+                        <div class="dropdown-content">
+                            <a href="#" id="edit-profile">Edit Profile</a>
+                            <a href="#" id="settings">Settings</a>
+                            <a href="#" id="logout">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="editProfileModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Edit Profile</h2>
+                <form id="editProfileForm">
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="profilePicture">Profile Picture:</label>
+                        <input type="file" id="profilePicture" name="profilePicture" accept="image/*">
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">New Password:</label>
+                        <input type="password" id="newPassword" name="newPassword">
+                    </div>
+                    <button type="submit" class="btn-save">Save Changes</button>
+                </form>
+            </div>
+        </div>
+        <div id="editProfileModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Edit Profile</h2>
+                <form id="editProfileForm">
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="profilePicture">Profile Picture:</label>
+                        <input type="file" id="profilePicture" name="profilePicture" accept="image/*">
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">New Password:</label>
+                        <input type="password" id="newPassword" name="newPassword">
+                    </div>
+                    <button type="submit" class="btn-save">Save Changes</button>
+                </form>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="main-content" id="overview-page">
+                <h1>Overview</h1>
+                <div class="dashboard">
+                    <div class="stats">
+                        <div class="stat-card">
+                            <h2>Tasks Completed</h2>
+                            <p id="tasks-completed">10</p>
+                        </div>
+                        <div class="stat-card">
+                            <h2>Pending Tasks</h2>
+                            <p id="pending-tasks">5</p>
+                        </div>
+                        <div class="stat-card">
+                            <h2>Upcoming Events</h2>
+                            <p id="upcoming-events">3</p>
+                        </div>
+                    </div>
+                    <div class="task-summary">
+                        <h2>Task Summary</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Task</th>
+                                    <th>Status</th>
+                                    <th>Due Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="task-summary-list">
+                                <!-- Summary will be dynamically added here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="project-tasks" id="tasks-page" style="display: none;">
+                <h1>TaskTrack Sprint</h1>
+                <button id="addTaskButton">Add Task</button>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Assignee</th>
+                            <th>Due date</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="taskList">
+                        <!-- Tasks will be dynamically added here -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- Update Task Modal -->
+            <div id="updateTaskModal" style="display:none;">
+            <h2>Update Task</h2>
+                <label for="updateTaskName">Name:</label>
+                <input type="text" id="updateTaskName">
+                <label for="updateTaskAssignee">Assignee:</label>
+                <input type="text" id="updateTaskAssignee">
+                <label for="updateTaskDueDate">Due date:</label>
+                <input type="date" id="updateTaskDueDate">
+                <label for="updateTaskPriority">Priority:</label>
+                <input type="text" id="updateTaskPriority">
+                <label for="updateTaskStatus">Status:</label>
+                <select id="updateTaskStatus">
+                    <option value="To-Do">To-Do</option>
+                    <option value="Incomplete">Incomplete</option>
+                    <option value="Complete">Complete</option>
+                </select>
+                <button id="saveUpdateButton">Save</button>
+                <button id="cancelUpdateButton">Cancel</button>
+            </div>
+            <div class="project-calendar" id="calendar-page" style="display: none;">
+                <div id="calendar"></div>
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <button id="prevMonth">&lt;</button>
+                        <span id="currentMonth"></span>
+                        <button id="nextMonth">&gt;</button>
+                    </div>
+                    <div id="calendar"></div>
+                </div>
+                <div id="eventModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <h2>Add Event</h2>
+                        <form id="eventForm">
+                            <label for="eventTitle">Event Title:</label>
+                            <input type="text" id="eventTitle" required>
+                            <label for="eventDate">Date:</label>
+                            <input type="date" id="eventDate" required>
+                            <button type="submit">Add Event</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar-right">
+            <div class="sidebar-header">
+                <h2>To - Do Lists</h2>
+                <input type="text" id="new-task" placeholder="Add a new task">
+                <button id="add-task-button">Add Task</button>
+                <ul id="task-list"></ul>
+            </div>
+
+            <!-- Update Task Modal -->
+            <div id="update-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close-button">&times;</span>
+                    <h2>Update Task</h2>
+                    <input type="text" id="update-task-input">
+                    <button id="update-task-button">Update Task</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/main.min.js"></script>
+    <script src="dashboard.js"></script>
+    <script src="calendar.js"></script>
+    <script src="taskpage.js"></script>
+    <script src="to-do.js"></script>
+    <script src="note.js"></script>
+    <script src="overview.js"></script>
+</body>
+</html>
