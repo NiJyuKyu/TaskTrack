@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const prevMonthButton = document.getElementById('prevMonth');
     const nextMonthButton = document.getElementById('nextMonth');
     const eventModal = document.getElementById('eventModal');
-    const closeModal = document.getElementsByClassName('close')[0];
     const eventForm = document.getElementById('eventForm');
     const eventTitle = document.getElementById('eventTitle');
     const eventDate = document.getElementById('eventDate');
@@ -13,17 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentYear = today.getFullYear();
     let currentMonthIndex = today.getMonth();
 
-    // Close the modal
-    closeModal.onclick = () => {
-        eventModal.style.display = 'none';
-    };
-
-    // Close the modal if user clicks outside of it
-    window.onclick = (event) => {
-        if (event.target == eventModal) {
-            eventModal.style.display = 'none';
-        }
-    };
 
     // Show the modal to add an event
     calendar.addEventListener('click', (e) => {

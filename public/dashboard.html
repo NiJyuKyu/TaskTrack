@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="dashboard.css">
     <link rel = "stylesheet" href="taskpage.css">
     <link rel = "stylesheet" href="calendar.css">
+    <link rel="stylesheet" href="notes.css">
+    <link rel="stylesheet" href="to-do-list.css">
 </head>
 <body>
     <div class="container">
@@ -31,13 +33,10 @@
                     <i class="fas fa-tasks"></i>
                     Task
                 </li>
-                <div class="sidebar-notes">
-                    <h2>Notes</h2>
-                    <div class="note-item">
-                        <h3>Apr 2, 2023</h3>
-                        <p>Hi Good Morning</p>
-                    </div>
-                </div>
+                <li class="nav-item" data-page="notes">
+                    <i class="fas fa-notes"></i>
+                    Notes
+                </li>
             </ul>
             <div class="profile">
                 <img src="" alt="Profile Picture" id="profile-pic" class="profile-pic">
@@ -78,7 +77,7 @@
                     <button type="submit" class="btn-save">Save Changes</button>
                 </form>
             </div>
-        </div>
+        </div>       
         <div class="main-content">
             <div class="project-tasks" id="tasks-page" style="display: none;">
                 <h1>TaskTrack Sprint</h1>
@@ -143,36 +142,29 @@
                     </div>
                 </div>
             </div>
+            <div class="notes" id="notes-page" style="display: none;">
+                <h2>Notes</h2>
+                <div id="notes-container"></div>
+                <form id="note-form">
+                    <input type="hidden" id="note-id">
+                    <input type="text" id="note-title" placeholder="Note Title" required>
+                    <textarea id="note-content" placeholder="Note Content" required></textarea>
+                    <button type="submit">Save Note</button>
+                </form>
+            </div>
         </div>
         <div class="sidebar-right">
             <div class="sidebar-header">
                 <h2>To Do Lists</h2>
-                <i class="fas fa-plus-circle"></i>
+                <i class="fas fa-plus-circle" id="addToDoButton"></i>
             </div>
-            <ul class="sidebar-list">
+            <ul class="sidebar-list" id="todoList">
+                <!-- To-Do items will be dynamically added here -->
                 <li class="sidebar-item">
-                    <input type="checkbox" checked>
-                    <label>Donate $500 to the charity</label>
+                    <input type="checkbox" id="todo-1" onchange="toggleToDo('todo-1', this)">
+                    <label for="todo-1">Donate $500 to the charity</label>
                     <span class="sidebar-date">May 20, 2020</span>
                     <span class="sidebar-tag">Donations</span>
-                </li>
-                <li class="sidebar-item">
-                    <input type="checkbox">
-                    <label>Do 500 pushups</label>
-                    <span class="sidebar-date">May 20, 2020</span>
-                    <span class="sidebar-tag">Sport</span>
-                </li>
-                <li class="sidebar-item">
-                    <input type="checkbox" checked>
-                    <label>Buy new headset</label>
-                    <span class="sidebar-date">May 20, 2020</span>
-                    <span class="sidebar-tag">Shopping</span>
-                </li>
-                <li class="sidebar-item">
-                    <input type="checkbox">
-                    <label>Clean the room</label>
-                    <span class="sidebar-date">May 20, 2020</span>
-                    <span class="sidebar-tag">Selfcare</span>
                 </li>
             </ul>
         </div>
@@ -184,5 +176,7 @@
     <script src="dashboard.js"></script>
     <script src="calendar.js"></script>
     <script src="taskpage.js"></script>
+    <script src="notes.js"></script>
+    <script src="to-do-list.js"></script>
 </body>
 </html>
