@@ -1,3 +1,4 @@
+/* CSS */
 body {
     font-family: Arial, sans-serif;
     display: flex;
@@ -13,6 +14,9 @@ body {
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px; /* Added to control maximum width */
+    box-sizing: border-box; /* Ensures padding is included in total width */
 }
 
 .calendar-header {
@@ -35,6 +39,7 @@ body {
     cursor: pointer;
     background-color: #f9f9f9;
     position: relative;
+    transition: background-color 0.3s ease; /* Smooth background color change */
 }
 
 #calendar .day:hover {
@@ -50,6 +55,9 @@ body {
     padding: 2px 5px;
     border-radius: 3px;
     font-size: 12px;
+    white-space: nowrap; /* Prevents text from wrapping */
+    overflow: hidden; /* Hides overflow */
+    text-overflow: ellipsis; /* Adds ellipsis for overflowed text */
 }
 
 /* Modal Styles */
@@ -73,6 +81,7 @@ body {
     width: 80%;
     max-width: 400px;
     border-radius: 10px;
+    box-sizing: border-box; /* Ensures padding is included in total width */
 }
 
 .close {
@@ -80,6 +89,7 @@ body {
     float: right;
     font-size: 28px;
     font-weight: bold;
+    transition: color 0.3s ease; /* Smooth color change */
 }
 
 .close:hover,
