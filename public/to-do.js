@@ -1,46 +1,46 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const todoInput = document.getElementById('new-todo');
-    const addTodoButton = document.getElementById('add-todo-button');
+    const taskInput = document.getElementById('new-task');
+    const addTodoButton = document.getElementById('add-task-button');
     const taskList = document.getElementById('task-list');
 
     const updateModal = document.getElementById('update-modal');
-    const updateTodoInput = document.getElementById('update-todo-input');
-    const updateTodoButton = document.getElementById('update-todo-button');
+    const updateTaskInput = document.getElementById('update-task-input');
+    const updateTaskButton = document.getElementById('update-task-button');
     const closeButton = document.querySelector('.close-button');
     
-    let currentTodo = null;
+    let currentTask = null;
 
-    // Fetch to-do lists from the server
+    // Load to-dos from the server
     fetch('/todolists')
         .then(response => response.json())
-        .then(todoLists => {
-            todoLists.forEach(todo => addTodoList(todo._id, todo.text));
-        });
+        .then(todos => {
+            todos.forEach(todo => addTodoToDOM(todo._id, todo.title));
+        })
+        .catch(error => console.error('Error loading to-dos:', error));
 
     addTodoButton.addEventListener('click', () => {
-        addTodoListToServer(todoInput.value);
-        todoInput.value = '';
+        const title = titleInput.value;
+        addTodoToServer(title);
+        titleInput.value = ''; // Clear input field after adding the to-do
     });
 
-    todoInput.addEventListener('keypress', (e) => {
+    taskInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
-            addTodoListToServer(todoInput.value);
-            todoInput.value = '';
+            addTask(taskInput.value);
+            taskInput.value = '';
         }
     });
 
-    function addTodoList(id, text) {
-        if (text.trim() === '') return;
+    function addTask(task) {
+        if (task.trim() === '') return;
 
         const listItem = document.createElement('li');
-        listItem.dataset.id = id;
 
-        const todoText = document.createElement('span');
-        todoText.textContent = text;
-        todoText.classList.add('task-text');
-        todoText.addEventListener('click', () => {
-            todoText.classList.toggle('completed');
-            updateTodoCompletion(id, todoText.classList.contains('completed'));
+        const taskText = document.createElement('span');
+        taskText.textContent = task;
+        taskText.classList.add('task-text');
+        taskText.addEventListener('click', () => {
+            taskText.classList.toggle('completed');
         });
 
         const menu = document.createElement('span');
@@ -57,8 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const updateButton = document.createElement('button');
         updateButton.textContent = 'Update';
         updateButton.addEventListener('click', () => {
-            currentTodo = listItem;
-            updateTodoInput.value = todoText.textContent;
+            currentTask = listItem;
+            updateTaskInput.value = taskText.textContent;
             updateModal.style.display = 'flex';
             menuContent.style.display = 'none';
         });
@@ -66,69 +66,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const deleteButton = document.createElement('button');
         deleteButton.textContent = 'Delete';
         deleteButton.addEventListener('click', () => {
-            console.log(`Deleting to-do with id: ${id}`); // Debugging line
-            deleteTodoFromServer(id);
             listItem.remove();
         });
 
         menuContent.appendChild(updateButton);
         menuContent.appendChild(deleteButton);
-        listItem.appendChild(todoText);
+        listItem.appendChild(taskText);
         listItem.appendChild(menu);
         listItem.appendChild(menuContent);
         taskList.appendChild(listItem);
     }
 
-    // Add to-do list to the server
-    function addTodoListToServer(text) {
-        if (text.trim() === '') return;
-
-        fetch('/todolists', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ text })
-        })
-        .then(response => response.json())
-        .then(data => addTodoList(data._id, data.text));
-    }
-
-    function updateTodoCompletion(id, completed) {
-        fetch(`/todolists/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ completed })
-        });
-    }
-
-    function deleteTodoFromServer(id) {
-        fetch(`/todolists/${id}`, {
-            method: 'DELETE'
-        })
-        .then(response => {
-            if (!response.ok) {
-                console.error('Failed to delete to-do list item:', response.statusText); // Debugging line
-            }
-        });
-    }
-
-    updateTodoButton.addEventListener('click', () => {
-        if (currentTodo) {
-            fetch(`/todolists/${currentTodo.dataset.id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ text: updateTodoInput.value })
-            })
-            .then(response => response.json())
-            .then(data => {
-                currentTodo.querySelector('.task-text').textContent = data.text;
-                updateModal.style.display = 'none';
-            });
+    updateTaskButton.addEventListener('click', () => {
+        if (currentTask) {
+            currentTask.querySelector('.task-text').textContent = updateTaskInput.value;
+            updateModal.style.display = 'none';
         }
     });
 

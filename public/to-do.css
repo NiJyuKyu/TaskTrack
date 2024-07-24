@@ -32,7 +32,7 @@ input[type="text"] {
 button {
     width: 100%;
     padding: 10px;
-    background-color:#bb0d0d;
+    background-color:#ff4b2b;
     color: white;
     border: none;
     border-radius: 3px;
@@ -40,7 +40,7 @@ button {
 }
 
 button:hover {
-    background-color: #cc1010;
+    background-color: #f53614;
 }
 
 ul {
@@ -95,7 +95,7 @@ li .menu-content button {
 }
 
 li .menu-content button:hover {
-    background-color: #bb0d0d;
+    background-color: #f53614;
 }
 
 .modal {

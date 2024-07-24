@@ -1,191 +1,113 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const taskInput = document.getElementById('new-task');
-    const addTaskButton = document.getElementById('add-task-button');
-    const taskList = document.getElementById('task-list');
+    const titleInput = document.getElementById('noteTitle');
+    const contentInput = document.getElementById('noteContent');
+    const addNoteButton = document.getElementById('addNoteButton');
+    const notesContainer = document.getElementById('notesContainer');
 
-    const updateModal = document.getElementById('update-modal');
-    const updateTaskInput = document.getElementById('update-task-input');
-    const updateTaskButton = document.getElementById('update-task-button');
-    const closeButton = document.querySelector('.close-button');
+    const updateModal = document.getElementById('updateNoteModal');
+    const updateNoteTitle = document.getElementById('updateNoteTitle');
+    const updateNoteContent = document.getElementById('updateNoteContent');
+    const saveUpdateButton = document.getElementById('saveUpdateNoteButton');
+    const cancelUpdateButton = document.getElementById('cancelUpdateNoteButton');
 
-    const notesModal = document.getElementById('notes-modal');
-    const notesInput = document.getElementById('notes-input');
-    const addNotesButton = document.getElementById('add-notes-button');
-    const closeNotesButton = document.querySelector('.close-notes-button');
+    let currentNote = null;
 
-    let currentTask = null;
-
-    // Load tasks from the server
-    fetch('/tasks')
+    // Load notes from the server
+    fetch('/notes')
         .then(response => response.json())
-        .then(tasks => {
-            tasks.forEach(task => addTask(task.text, task._id, task.completed, task.notes));
-        });
+        .then(notes => {
+            notes.forEach(note => addNoteToDOM(note._id, note.title, note.content));
+        })
+        .catch(error => console.error('Error loading notes:', error));
 
-    addTaskButton.addEventListener('click', () => {
-        addTaskToServer(taskInput.value);
-        taskInput.value = '';
+    addNoteButton.addEventListener('click', () => {
+        const title = titleInput.value;
+        const content = contentInput.value;
+        addNoteToServer(title, content);
+        titleInput.value = ''; // Clear input fields after adding the note
+        contentInput.value = '';
     });
 
-    taskInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            addTaskToServer(taskInput.value);
-            taskInput.value = '';
-        }
-    });
+    function addNoteToServer(title, content) {
+        if (title.trim() === '' || content.trim() === '') return; // Do not add empty notes
 
-    function addTask(task, id = null, completed = false, notes = '') {
-        if (task.trim() === '') return;
-
-        const listItem = document.createElement('li');
-        if (id) listItem.dataset.id = id;
-
-        const taskText = document.createElement('span');
-        taskText.textContent = task;
-        taskText.classList.add('task-text');
-        if (completed) taskText.classList.add('completed');
-        taskText.addEventListener('click', () => {
-            taskText.classList.toggle('completed');
-            updateTaskCompletion(listItem.dataset.id, taskText.classList.contains('completed'));
-        });
-
-        const menu = document.createElement('span');
-        menu.textContent = '⋮';
-        menu.classList.add('menu');
-        menu.addEventListener('click', () => {
-            const menuContent = listItem.querySelector('.menu-content');
-            menuContent.style.display = menuContent.style.display === 'block' ? 'none' : 'block';
-        });
-
-        const menuContent = document.createElement('div');
-        menuContent.classList.add('menu-content');
-
-        const updateButton = document.createElement('button');
-        updateButton.textContent = 'Update';
-        updateButton.addEventListener('click', () => {
-            currentTask = listItem;
-            updateTaskInput.value = taskText.textContent;
-            updateModal.style.display = 'flex';
-            menuContent.style.display = 'none';
-        });
-
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Delete';
-        deleteButton.addEventListener('click', () => {
-            deleteTaskFromServer(listItem.dataset.id);
-            listItem.remove();
-        });
-
-        const notesButton = document.createElement('button');
-        notesButton.textContent = 'Add Notes';
-        notesButton.addEventListener('click', () => {
-            currentTask = listItem;
-            notesInput.value = listItem.querySelector('.notes').textContent;
-            notesModal.style.display = 'flex';
-            menuContent.style.display = 'none';
-        });
-
-        const notesDiv = document.createElement('div');
-        notesDiv.classList.add('notes');
-        notesDiv.textContent = notes;
-        if (notes.trim() !== '') {
-            notesDiv.style.display = 'block';
-        } else {
-            notesDiv.style.display = 'none';
-        }
-
-        menuContent.appendChild(updateButton);
-        menuContent.appendChild(notesButton);
-        menuContent.appendChild(deleteButton);
-        listItem.appendChild(taskText);
-        listItem.appendChild(menu);
-        listItem.appendChild(menuContent);
-        listItem.appendChild(notesDiv);
-        taskList.appendChild(listItem);
-    }
-
-    function addTaskToServer(task) {
-        if (task.trim() === '') return;
-
-        fetch('/tasks', {
+        fetch('/notes', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ text: task })
+            body: JSON.stringify({ title, content })
         })
         .then(response => response.json())
-        .then(data => addTask(data.text, data._id, data.completed, data.notes));
+        .then(data => addNoteToDOM(data._id, data.title, data.content))
+        .catch(error => console.error('Error adding note:', error));
     }
 
-    function updateTaskCompletion(id, completed) {
-        fetch(`/tasks/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ completed })
+    function addNoteToDOM(id, title, content) {
+        const noteElement = document.createElement('div');
+        noteElement.classList.add('note');
+        noteElement.dataset.id = id;
+
+        noteElement.innerHTML = `
+            <h3>${title}</h3>
+            <p>${content}</p>
+            <button class="update-note-button">Update</button>
+            <button class="delete-note-button">Delete</button>
+        `;
+
+        noteElement.querySelector('.update-note-button').addEventListener('click', () => {
+            currentNote = noteElement;
+            updateNoteTitle.value = title;
+            updateNoteContent.value = content;
+            updateModal.style.display = 'block';
         });
+
+        noteElement.querySelector('.delete-note-button').addEventListener('click', () => {
+            deleteNoteFromServer(id);
+            noteElement.remove();
+        });
+
+        notesContainer.appendChild(noteElement);
     }
 
-    function deleteTaskFromServer(id) {
-        fetch(`/tasks/${id}`, {
+    function deleteNoteFromServer(id) {
+        fetch(`/notes/${id}`, {
             method: 'DELETE'
-        });
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            console.log('Note deleted successfully');
+        })
+        .catch(error => console.error('Error deleting note:', error));
     }
 
-    updateTaskButton.addEventListener('click', () => {
-        if (currentTask) {
-            fetch(`/tasks/${currentTask.dataset.id}`, {
+    saveUpdateButton.addEventListener('click', () => {
+        if (currentNote) {
+            fetch(`/notes/${currentNote.dataset.id}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ text: updateTaskInput.value })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title: updateNoteTitle.value,
+                    content: updateNoteContent.value
+                })
             })
             .then(response => response.json())
             .then(data => {
-                currentTask.querySelector('.task-text').textContent = data.text;
+                currentNote.querySelector('h3').textContent = data.title;
+                currentNote.querySelector('p').textContent = data.content;
                 updateModal.style.display = 'none';
-            });
-        }
-    });
-
-    addNotesButton.addEventListener('click', () => {
-        if (currentTask) {
-            const notesDiv = currentTask.querySelector('.notes');
-            const notesText = notesInput.value;
-            notesDiv.textContent = notesText;
-            notesDiv.style.display = notesText.trim() !== '' ? 'block' : 'none';
-            
-            fetch(`/tasks/${currentTask.dataset.id}/notes`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ notes: notesText })
             })
-            .then(response => response.json())
-            .then(() => {
-                notesModal.style.display = 'none';
-            });
+            .catch(error => console.error('Error updating note:', error));
         }
     });
 
-    closeButton.addEventListener('click', () => {
+    cancelUpdateButton.addEventListener('click', () => {
         updateModal.style.display = 'none';
-    });
-
-    closeNotesButton.addEventListener('click', () => {
-        notesModal.style.display = 'none';
     });
 
     window.addEventListener('click', (event) => {
         if (event.target === updateModal) {
             updateModal.style.display = 'none';
-        }
-        if (event.target === notesModal) {
-            notesModal.style.display = 'none';
         }
     });
 });

@@ -14,8 +14,51 @@ body {
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 800px;
 }
 
+h1 {
+    text-align: center;
+}
+
+button {
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+}
+
+/* Add Task Button */
+button#addTaskButton {
+    background-color: #ba0b0b;
+}
+
+button#addTaskButton:hover {
+    background-color: #c12828;
+}
+
+/* Delete Button */
+button.delete {
+    background-color: #e74c3c;
+}
+
+button.delete:hover {
+    background-color: #c0392b;
+}
+
+/* Update Button */
+button.update-task-button {
+    background-color: #3498db;
+}
+
+button.update-task-button:hover {
+    background-color: #2980b9;
+}
+
+/* Table Styles */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -35,37 +78,8 @@ th {
     background-color: #f2f2f2;
 }
 
-button {
-    padding: 8px 12px;
-    margin-bottom: 10px;
-    cursor: pointer;
-}
-
-button.delete {
-    background-color: #e74c3c;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-}
-
-button.delete:hover {
-    background-color: #c0392b;
-}
-
-/* Update Button */
-button.update {
-    background-color: #3498db;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-}
-
-button.update:hover {
-    background-color: #2980b9;
-}
-
-/* Modal */
-#updateTaskModal {
+/* Modal Styles */
+.modal {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -76,19 +90,21 @@ button.update:hover {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     display: none;
     z-index: 1000;
+    width: 80%;
+    max-width: 500px;
 }
 
-#updateTaskModal h2 {
+.modal h2 {
     margin-top: 0;
 }
 
-#updateTaskModal label {
+.modal label {
     display: block;
     margin-top: 10px;
 }
 
-#updateTaskModal input,
-#updateTaskModal select {
+.modal input,
+.modal select {
     width: 100%;
     padding: 8px;
     margin-top: 5px;
@@ -96,33 +112,32 @@ button.update:hover {
     border-radius: 4px;
 }
 
-#updateTaskModal button {
+.modal button {
     margin-top: 10px;
     padding: 8px 12px;
-    border: none;
     border-radius: 4px;
     cursor: pointer;
 }
 
+/* Save Button in Update Modal */
 #saveUpdateButton {
     background-color: #d22ee0;
-    color: #fff;
 }
 
 #saveUpdateButton:hover {
     background-color: #961ba1;
 }
 
+/* Cancel Button in Update Modal */
 #cancelUpdateButton {
     background-color: #e74c3c;
-    color: #fff;
 }
 
 #cancelUpdateButton:hover {
     background-color: #c0392b;
 }
 
-/* Overlay */
+/* Overlay Styles */
 .modal-overlay {
     position: fixed;
     top: 0;
