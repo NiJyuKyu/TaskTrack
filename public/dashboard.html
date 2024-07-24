@@ -34,11 +34,6 @@
                     <i class="fas fa-tasks"></i>
                     Task
                 </li>
-                <div class="sidebar-notes">
-                    <h2>Notes</h2>
-                        <textarea id="notes-input" rows="4" placeholder="Enter your notes here..."></textarea>
-                        <button id="add-notes-button">Add Notes</button>
-                </div>
             </ul>
             <div class="profile">
                 <img src="profile-pic-placeholder.png" alt="Profile Picture" id="profile-pic" class="profile-pic">
@@ -139,10 +134,9 @@
                     </div>
                 </div>
             </div>
-            <<div class="project-tasks" id="tasks-page" style="display: none;">
+            <div class="project-tasks" id="tasks-page" style="display: none;">
                 <h1>TaskTrack Sprint</h1>
                 <button id="addTaskButton">Add Task</button>
-                <input type="text" id="new-task">
                 <table>
                     <thead>
                         <tr>
@@ -155,14 +149,13 @@
                         </tr>
                     </thead>
                     <tbody id="taskList">
-                        <input type="text" id="new-task">
                         <!-- Tasks will be dynamically added here -->
                     </tbody>
                 </table>
             </div>
             <!-- Update Task Modal -->
             <div id="updateTaskModal" style="display:none;">
-                <h2>Update Task</h2>
+            <h2>Update Task</h2>
                 <label for="updateTaskName">Name:</label>
                 <input type="text" id="updateTaskName">
                 <label for="updateTaskAssignee">Assignee:</label>
@@ -174,7 +167,7 @@
                 <label for="updateTaskStatus">Status:</label>
                 <select id="updateTaskStatus">
                     <option value="To-Do">To-Do</option>
-                    <option value="Incomplete">Ongoing</option>
+                    <option value="Incomplete">Incomplete</option>
                     <option value="Complete">Complete</option>
                 </select>
                 <button id="saveUpdateButton">Save</button>
@@ -211,6 +204,11 @@
                 <input type="text" id="new-task" placeholder="Add a new task">
                 <button id="add-task-button">Add To-Do</button>
                 <ul id="task-list"></ul>
+            </div>
+            <div class="sidebar-notes">
+                <h2>Notes</h2>
+                    <textarea id="notes-input" rows="4" placeholder="Enter your notes here..."></textarea>
+                    <button id="add-notes-button">Add Notes</button>
             </div>
 
             <!-- Update Task Modal -->
