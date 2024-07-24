@@ -10,28 +10,38 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let currentTask = null;
 
+    // Load tasks from the server
+    fetch('/todolists')
+        .then(response => response.json())
+        .then(tasks => {
+            tasks.forEach(task => addTask(task.text, task._id, task.completed));
+        });
+
     addTaskButton.addEventListener('click', () => {
-        addTask(taskInput.value);
+        addTaskToServer(taskInput.value);
         taskInput.value = '';
     });
 
     taskInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
-            addTask(taskInput.value);
+            addTaskToServer(taskInput.value);
             taskInput.value = '';
         }
     });
 
-    function addTask(task) {
+    function addTask(task, id = null, completed = false) {
         if (task.trim() === '') return;
 
         const listItem = document.createElement('li');
+        if (id) listItem.dataset.id = id;
 
         const taskText = document.createElement('span');
         taskText.textContent = task;
         taskText.classList.add('task-text');
+        if (completed) taskText.classList.add('completed');
         taskText.addEventListener('click', () => {
             taskText.classList.toggle('completed');
+            updateTaskCompletion(listItem.dataset.id, taskText.classList.contains('completed'));
         });
 
         const menu = document.createElement('span');
@@ -57,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const deleteButton = document.createElement('button');
         deleteButton.textContent = 'Delete';
         deleteButton.addEventListener('click', () => {
+            deleteTaskFromServer(listItem.dataset.id);
             listItem.remove();
         });
 
@@ -68,10 +79,50 @@ document.addEventListener('DOMContentLoaded', () => {
         taskList.appendChild(listItem);
     }
 
+    function addTaskToServer(task) {
+        if (task.trim() === '') return;
+
+        fetch('/todolists', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ text: task })
+        })
+        .then(response => response.json())
+        .then(data => addTask(data.text, data._id, data.completed));
+    }
+
+    function updateTaskCompletion(id, completed) {
+        fetch(`/todolists/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ completed })
+        });
+    }
+
+    function deleteTaskFromServer(id) {
+        fetch(`/todolists/${id}`, {
+            method: 'DELETE'
+        });
+    }
+
     updateTaskButton.addEventListener('click', () => {
         if (currentTask) {
-            currentTask.querySelector('.task-text').textContent = updateTaskInput.value;
-            updateModal.style.display = 'none';
+            fetch(`/todolists/${currentTask.dataset.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text: updateTaskInput.value })
+            })
+            .then(response => response.json())
+            .then(data => {
+                currentTask.querySelector('.task-text').textContent = data.text;
+                updateModal.style.display = 'none';
+            });
         }
     });
 

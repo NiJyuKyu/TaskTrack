@@ -1,38 +1,34 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const path = require('path');
-const multer = require('multer');
+const tasksRoutes = require('./routes/tasksRoutes'); // Updated path
+const noteRoutes = require('./routes/noteRoutes'); // Added path
+const toDoListRoutes = require('./routes/toDoListRoutes'); // Added path
 
 const app = express();
-const PORT = process.env.PORT || 5000;
-const SECRET_KEY = 'your_secret_key';
+const PORT = process.env.PORT || 3003;
+const JWT_SECRET = 'your_jwt_secret_key'; // You should use environment variables for secrets
 
-// Middleware
-app.use(bodyParser.json());
-app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'public/uploads/')
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + path.extname(file.originalname))
-    }
-});
-const upload = multer({ storage: storage });
-
-// Connect to MongoDB
-mongoose.connect('mongodb://localhost/tasktrack', {
+// Database connection
+mongoose.connect('mongodb://localhost:27017/tasktrack', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-}).then(() => console.log('MongoDB connected'))
-.catch(err => console.log(err));
+});
 
+mongoose.connection.on('connected', () => {
+    console.log('Connected to MongoDB');
+});
+
+mongoose.connection.on('error', (err) => {
+    console.log(`MongoDB connection error: ${err}`);
+});
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static('public'));
 
 // User Schema and Model
 const userSchema = new mongoose.Schema({
@@ -45,21 +41,7 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-// Middleware to verify JWT token
-const verifyToken = (req, res, next) => {
-    const token = req.header('Authorization');
-    if (!token) return res.status(401).json({ message: 'Access denied' });
-
-    try {
-        const verified = jwt.verify(token, SECRET_KEY);
-        req.userId = verified.id;
-        next();
-    } catch (err) {
-        res.status(400).json({ message: 'Invalid token' });
-    }
-};
-
-// Routes
+// Signup route
 app.post('/signup', async (req, res) => {
     const { username, email, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -70,21 +52,30 @@ app.post('/signup', async (req, res) => {
         .catch(err => res.status(400).json({ error: err.message }));
 });
 
+// Login route
 app.post('/login', async (req, res) => {
-    const { username, password } = req.body;
+    try {
+        const { username, password } = req.body;
 
-    const user = await User.findOne({ username });
-    if (!user) {
-        return res.status(404).json({ message: 'User not found' });
+        // Check if the user exists
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Check if the password matches
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: 'Invalid credentials' });
+        }
+
+        // Generate JWT token
+        const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
+        res.status(200).json({ message: 'Logged in successfully', token });
+    } catch (error) {
+        console.error('Login Error:', error); // Log detailed error
+        res.status(500).json({ message: 'Server error' });
     }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-        return res.status(400).json({ message: 'Invalid credentials' });
-    }
-
-    const token = jwt.sign({ id: user._id }, SECRET_KEY, { expiresIn: '1h' });
-    res.status(200).json({ message: 'Logged in successfully', token });
 });
 
 // New route to check authentication
@@ -100,66 +91,32 @@ app.get('/api/check-auth', verifyToken, async (req, res) => {
     }
 });
 
-// New route to update profile
-app.post('/api/update-profile', verifyToken, upload.single('profilePicture'), async (req, res) => {
-    try {
-        const { username, name, newPassword } = req.body;
-        const user = await User.findById(req.userId);
+// Middleware to verify JWT token
+function verifyToken(req, res, next) {
+    const token = req.headers['authorization']?.split(' ')[1]; // Extract token from Authorization header
 
-        if (username) user.username = username;
-        if (name) user.name = name;
-        if (req.file) user.profilePicture = `/uploads/${req.file.filename}`;
-        
-        if (newPassword) {
-            user.password = await bcrypt.hash(newPassword, 10);
+    if (!token) {
+        return res.status(403).json({ message: 'No token provided' });
+    }
+
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+        if (err) {
+            return res.status(401).json({ message: 'Failed to authenticate token' });
         }
 
-        await user.save();
-
-        const updatedUser = await User.findById(req.userId).select('-password');
-        res.json({ success: true, user: updatedUser });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to update profile', error: error.message });
-    }
-});
-
-// Logout route (optional, as JWT is stateless)
-app.post('/api/logout', (req, res) => {
-    // In a real-world scenario, you might want to invalidate the token on the client-side
-    res.json({ success: true, message: 'Logged out successfully' });
-});
+        req.userId = decoded.id; // Store user ID in request object
+        next(); // Proceed to the next middleware/route handler
+    });
+}
 
 // Serve static files
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
 
-// Handle SPA
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// Routes
+app.use('/tasks', tasksRoutes);
+app.use('/notes', noteRoutes); // Added route
+app.use('/todolists', toDoListRoutes); // Added route
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
-
-// Define a simple route
-app.get('/', (req, res) => {
-    res.send('Hello from Task Track');
-});
-
-//start server
-const port = 5000;
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-});
-
-// Import routes
-const taskRoutes = require('./routes/tasks');
-
-// Use routes
-app.use('/api', taskRoutes);
-
-app.post('/api/tasks', async (req, res) => {
-    try {
-      const task = new Task(req.body);
-      await task.save();
-      res.json(task);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
-  });

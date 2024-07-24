@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateTaskInput = document.getElementById('update-task-input');
     const updateTaskButton = document.getElementById('update-task-button');
     const closeButton = document.querySelector('.close-button');
-    
+
     const notesModal = document.getElementById('notes-modal');
     const notesInput = document.getElementById('notes-input');
     const addNotesButton = document.getElementById('add-notes-button');
@@ -15,28 +15,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentTask = null;
 
+    // Load tasks from the server
+    fetch('/tasks')
+        .then(response => response.json())
+        .then(tasks => {
+            tasks.forEach(task => addTask(task.text, task._id, task.completed, task.notes));
+        });
+
     addTaskButton.addEventListener('click', () => {
-        addTask(taskInput.value);
+        addTaskToServer(taskInput.value);
         taskInput.value = '';
     });
 
     taskInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
-            addTask(taskInput.value);
+            addTaskToServer(taskInput.value);
             taskInput.value = '';
         }
     });
 
-    function addTask(task) {
+    function addTask(task, id = null, completed = false, notes = '') {
         if (task.trim() === '') return;
 
         const listItem = document.createElement('li');
+        if (id) listItem.dataset.id = id;
 
         const taskText = document.createElement('span');
         taskText.textContent = task;
         taskText.classList.add('task-text');
+        if (completed) taskText.classList.add('completed');
         taskText.addEventListener('click', () => {
             taskText.classList.toggle('completed');
+            updateTaskCompletion(listItem.dataset.id, taskText.classList.contains('completed'));
         });
 
         const menu = document.createElement('span');
@@ -62,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const deleteButton = document.createElement('button');
         deleteButton.textContent = 'Delete';
         deleteButton.addEventListener('click', () => {
+            deleteTaskFromServer(listItem.dataset.id);
             listItem.remove();
         });
 
@@ -76,12 +87,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const notesDiv = document.createElement('div');
         notesDiv.classList.add('notes');
-        
-        // Populate notes if they exist
-        const existingNotes = localStorage.getItem(`notes-${task}`);
-        if (existingNotes) {
-            notesDiv.textContent = existingNotes;
+        notesDiv.textContent = notes;
+        if (notes.trim() !== '') {
             notesDiv.style.display = 'block';
+        } else {
+            notesDiv.style.display = 'none';
         }
 
         menuContent.appendChild(updateButton);
@@ -94,10 +104,50 @@ document.addEventListener('DOMContentLoaded', () => {
         taskList.appendChild(listItem);
     }
 
+    function addTaskToServer(task) {
+        if (task.trim() === '') return;
+
+        fetch('/tasks', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ text: task })
+        })
+        .then(response => response.json())
+        .then(data => addTask(data.text, data._id, data.completed, data.notes));
+    }
+
+    function updateTaskCompletion(id, completed) {
+        fetch(`/tasks/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ completed })
+        });
+    }
+
+    function deleteTaskFromServer(id) {
+        fetch(`/tasks/${id}`, {
+            method: 'DELETE'
+        });
+    }
+
     updateTaskButton.addEventListener('click', () => {
         if (currentTask) {
-            currentTask.querySelector('.task-text').textContent = updateTaskInput.value;
-            updateModal.style.display = 'none';
+            fetch(`/tasks/${currentTask.dataset.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text: updateTaskInput.value })
+            })
+            .then(response => response.json())
+            .then(data => {
+                currentTask.querySelector('.task-text').textContent = data.text;
+                updateModal.style.display = 'none';
+            });
         }
     });
 
@@ -107,9 +157,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const notesText = notesInput.value;
             notesDiv.textContent = notesText;
             notesDiv.style.display = notesText.trim() !== '' ? 'block' : 'none';
-            // Save notes to localStorage
-            localStorage.setItem(`notes-${currentTask.querySelector('.task-text').textContent}`, notesText);
-            notesModal.style.display = 'none';
+            
+            fetch(`/tasks/${currentTask.dataset.id}/notes`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ notes: notesText })
+            })
+            .then(response => response.json())
+            .then(() => {
+                notesModal.style.display = 'none';
+            });
         }
     });
 
