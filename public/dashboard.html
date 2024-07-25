@@ -240,19 +240,23 @@
         </div>
 
         <!-- Update Note Modal -->
-        <div id="updateNoteModal" class="modal">
-            <div class="modal-content">
-                <span id="closeUpdateNoteModalButton" class="close-button">&times;</span>
-                <h2>Update Note</h2>
-                <input type="text" id="updateNoteTitle" placeholder="Title">
-                <textarea id="updateNoteContent" placeholder="Content"></textarea>
-                <button id="saveUpdateNoteButton">Save</button>
-            </div>
-        </div>
+<div id="updateNoteModal" class="modal">
+    <div class="modal-content">
+        <span id="closeUpdateNoteModalButton" class="close-button">&times;</span>
+        <h2>Update Note</h2>
+        <input type="text" id="updateNoteTitle" placeholder="Title">
+        <textarea id="updateNoteContent" placeholder="Content"></textarea>
+        <button id="saveUpdateButton">Save</button>
+        <button id="cancelUpdateNoteButton">Cancel</button>
     </div>
 </div>
 
-        
+
+        <!-- Modal Overlay -->
+        <div class="modal-overlay" style="display: none;"></div>
+    </div>
+</div>
+     
         <!-- Delete Confirmation Modal -->
         <div id="deleteConfirmModal" class="modal">
             <div class="modal-content">
