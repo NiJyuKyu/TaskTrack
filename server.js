@@ -86,7 +86,6 @@ app.use(session({
     saveUninitialized: true
 }));
 
-
 // Middleware to verify JWT token
 function verifyToken(req, res, next) {
     const token = req.headers['authorization']?.split(' ')[1];
@@ -105,6 +104,12 @@ function verifyToken(req, res, next) {
 app.use('/tasks', tasksRoutes);
 app.use('/notes', noteRoutes);
 app.use('/todolists', toDoListRoutes);
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+});
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

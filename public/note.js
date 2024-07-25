@@ -90,34 +90,43 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Event listener to save changes in the update note modal
+    // Update the save button event listener
     saveUpdateButton.addEventListener('click', () => {
-        const updatedNote = {
-            title: updateNoteTitle.value,
-            content: updateNoteContent.value
-        };
+    const updatedNote = {
+        title: updateNoteTitle.value,
+        content: updateNoteContent.value
+    };
 
-        if (currentNote) {
-            // Update existing note
-            fetch(`/notes/${currentNote.dataset.id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updatedNote)
-            })
-            .then(response => response.json())
-            .then(data => {
-                updateNoteInDOM(data);
-                closeUpdateNoteModal();
-            })
-            .catch(error => console.error('Error updating note:', error));
-        }
-    });
+    if (currentNote) {
+        fetch(`/notes/${currentNote.dataset.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedNote)
+        })
+        .then(response => response.json())
+        .then(data => {
+            updateNoteInDOM(data);
+            closeUpdateNoteModal();
+        })
+        .catch(error => console.error('Error updating note:', error));
+    }
+});
 
     // Event listener to cancel the add note
     cancelAddNoteButton.addEventListener('click', closeAddNoteModal);
     closeAddNoteModalButton.addEventListener('click', closeAddNoteModal);
     closeUpdateNoteModalButton.addEventListener('click', closeUpdateNoteModal);
     cancelUpdateNoteButton.addEventListener('click', closeUpdateNoteModal);
+
+    // Ensure these event listeners are correctly set up
+    closeUpdateNoteModalButton.addEventListener('click', closeUpdateNoteModal);
+    cancelUpdateNoteButton.addEventListener('click', closeUpdateNoteModal);
+
+    // Make sure the closeUpdateNoteModal function is defined correctly
+    function closeUpdateNoteModal() {
+    updateNoteModal.style.display = 'none';
+    modalOverlay.style.display = 'none';
+}   
 
     // Event listener to close modal when clicking outside
     window.addEventListener('click', (event) => {

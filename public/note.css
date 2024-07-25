@@ -1,249 +1,142 @@
+/* General Styles */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
     margin: 0;
-}
-
-.container {
-    background: white;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
-}
-
-h1 {
-    margin: 0 0 20px;
-    text-align: center;
-}
-
-input[type="text"], textarea {
-    width: calc(100% - 20px);
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    margin-bottom: 10px;
-}
-
-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #d61212;
-    color: white;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #bb0d0d;
-}
-
-ul {
-    list-style: none;
     padding: 0;
 }
 
-li {
-    background: #f9f9f9;
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 3px;
-    display: flex;
-    flex-direction: column;
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Add Note Modal Styles */
+#addNoteModal,
+#updateNoteModal {
+    background: white;
+    border-radius: 8px;
+    width: 400px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     position: relative;
 }
 
-li .task-text {
-    flex: 1;
-    margin-right: 10px;
+#addNoteModal h2,
+#updateNoteModal h2 {
+    margin-top: 0;
 }
 
-li.completed .task-text {
-    text-decoration: line-through;
-    color: #888;
-}
-
-li .menu {
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-li .menu-content {
-    display: none;
-    position: absolute;
-    right: 10px;
-    top: 25px;
-    background: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 3px;
-    z-index: 1;
-}
-
-li .menu-content button {
-    display: block;
+/* Input Fields */
+input[type="text"],
+textarea {
     width: 100%;
     padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Buttons */
+button {
+    padding: 10px 20px;
     border: none;
-    background: none;
-    text-align: left;
+    border-radius: 4px;
     cursor: pointer;
+    font-size: 16px;
 }
 
-li .menu-content button:hover {
-    background-color: #ddd;
+button:hover {
+    opacity: 0.8;
 }
 
-li .notes {
-    margin-top: 10px;
-    padding: 10px;
-    background: #e9e9e9;
-    border-radius: 3px;
-    display: none;
-}
-
-/* Modal Styles */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgb(0, 0, 0);
-    background-color: rgba(0, 0, 0, 0.4);
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 400px;
-    border-radius: 5px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.close-button, .close-notes-button {
-    align-self: flex-end;
-    font-size: 25px;
-    cursor: pointer;
-}
-
-/* Delete Confirmation Modal Styles */
-#deleteConfirmModal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
-    justify-content: center;
-    align-items: center;
-}
-
-#deleteConfirmModal .modal-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 300px;
-    border-radius: 5px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-#deleteConfirmModal .close-button {
-    align-self: flex-end;
-    font-size: 25px;
-    cursor: pointer;
-    color: #333;
-}
-
-#deleteConfirmModal button {
-    margin: 5px;
-    padding: 10px;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-}
-
-#confirmDeleteButton {
-    background-color: #d61212;
+#addNoteButton,
+#saveUpdateButton {
+    background-color: #4CAF50;
     color: white;
 }
 
-#confirmDeleteButton:hover {
-    background-color: #bb0d0d;
+#cancelAddNoteButton,
+#cancelUpdateNoteButton,
+#closeAddNoteModalButton,
+#closeUpdateNoteModalButton {
+    background-color: #f44336;
+    color: white;
 }
 
-#cancelDeleteButton {
-    background-color: #e0e0e0;
-    color: #333;
+/* Notes Container Styles */
+#notesContainer {
+    list-style-type: none;
+    padding: 0;
 }
 
-#cancelDeleteButton:hover {
-    background-color: #c0c0c0;
-}
-
-/* Update Note Modal Styles */
-#updateNoteModal .modal-content {
-    width: 80%;
-    max-width: 500px;
-}
-
-#updateNoteModal #updateNoteTitle, 
-#updateNoteModal #updateNoteContent {
-    width: calc(100% - 20px);
-    padding: 10px;
+#notesContainer li {
+    background: #f9f9f9;
     border: 1px solid #ddd;
-    border-radius: 3px;
+    border-radius: 8px;
+    margin: 10px 0;
+    padding: 15px;
+    position: relative;
+}
+
+/* Note Header and Content */
+.note-header {
     margin-bottom: 10px;
 }
 
-#updateNoteModal #saveUpdateNoteButton,
-#updateNoteModal #cancelButton {
-    width: calc(50% - 20px);
-    padding: 10px;
-    border-radius: 3px;
-    cursor: pointer;
+.note-title {
+    font-size: 18px;
+    margin: 0;
+}
+
+.note-content {
     font-size: 16px;
-    transition: background-color 0.3s ease;
-    margin: 10px;
+    margin: 0;
 }
 
-#updateNoteModal #saveUpdateNoteButton {
-    background-color: #4CAF50; /* Green */
+/* Update and Delete Buttons */
+.update-note-button,
+.delete-note-button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.update-note-button {
+    background-color: #2196F3;
     color: white;
 }
 
-#updateNoteModal #saveUpdateNoteButton:hover {
-    background-color: #45a049;
-}
-
-#updateNoteModal #cancelButton {
-    background-color: #f44336; /* Red */
+.delete-note-button {
+    background-color: #f44336;
     color: white;
 }
 
-#updateNoteModal #cancelButton:hover {
-    background-color: #d32f2f; /* Darker Red */
+/* Modal Close Button */
+.modal-close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+}
+
+/* Responsive Styles */
+@media (max-width: 600px) {
+    #addNoteModal,
+    #updateNoteModal {
+        width: 90%;
+    }
 }
