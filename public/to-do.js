@@ -1,47 +1,46 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const taskInput = document.getElementById('new-task');
-    const addTaskButton = document.getElementById('add-task-button');
+    const todoInput = document.getElementById('new-todo');
+    const addTodoButton = document.getElementById('add-todo-button');
     const taskList = document.getElementById('task-list');
 
     const updateModal = document.getElementById('update-modal');
-    const updateTaskInput = document.getElementById('update-task-input');
-    const updateTaskButton = document.getElementById('update-task-button');
+    const updateTodoInput = document.getElementById('update-todo-input');
+    const updateTodoButton = document.getElementById('update-todo-button');
     const closeButton = document.querySelector('.close-button');
     
-    let currentTask = null;
+    let currentTodo = null;
 
-    // Load tasks from the server
+    // Fetch to-do lists from the server
     fetch('/todolists')
         .then(response => response.json())
-        .then(tasks => {
-            tasks.forEach(task => addTask(task.text, task._id, task.completed));
+        .then(todoLists => {
+            todoLists.forEach(todo => addTodoList(todo._id, todo.text));
         });
 
-    addTaskButton.addEventListener('click', () => {
-        addTaskToServer(taskInput.value);
-        taskInput.value = '';
+    addTodoButton.addEventListener('click', () => {
+        addTodoListToServer(todoInput.value);
+        todoInput.value = '';
     });
 
-    taskInput.addEventListener('keypress', (e) => {
+    todoInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
-            addTaskToServer(taskInput.value);
-            taskInput.value = '';
+            addTodoListToServer(todoInput.value);
+            todoInput.value = '';
         }
     });
 
-    function addTask(task, id = null, completed = false) {
-        if (task.trim() === '') return;
+    function addTodoList(id, text) {
+        if (text.trim() === '') return;
 
         const listItem = document.createElement('li');
-        if (id) listItem.dataset.id = id;
+        listItem.dataset.id = id;
 
-        const taskText = document.createElement('span');
-        taskText.textContent = task;
-        taskText.classList.add('task-text');
-        if (completed) taskText.classList.add('completed');
-        taskText.addEventListener('click', () => {
-            taskText.classList.toggle('completed');
-            updateTaskCompletion(listItem.dataset.id, taskText.classList.contains('completed'));
+        const todoText = document.createElement('span');
+        todoText.textContent = text;
+        todoText.classList.add('task-text');
+        todoText.addEventListener('click', () => {
+            todoText.classList.toggle('completed');
+            updateTodoCompletion(id, todoText.classList.contains('completed'));
         });
 
         const menu = document.createElement('span');
@@ -58,8 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const updateButton = document.createElement('button');
         updateButton.textContent = 'Update';
         updateButton.addEventListener('click', () => {
-            currentTask = listItem;
-            updateTaskInput.value = taskText.textContent;
+            currentTodo = listItem;
+            updateTodoInput.value = todoText.textContent;
             updateModal.style.display = 'flex';
             menuContent.style.display = 'none';
         });
@@ -67,33 +66,35 @@ document.addEventListener('DOMContentLoaded', () => {
         const deleteButton = document.createElement('button');
         deleteButton.textContent = 'Delete';
         deleteButton.addEventListener('click', () => {
-            deleteTaskFromServer(listItem.dataset.id);
+            console.log(`Deleting to-do with id: ${id}`); // Debugging line
+            deleteTodoFromServer(id);
             listItem.remove();
         });
 
         menuContent.appendChild(updateButton);
         menuContent.appendChild(deleteButton);
-        listItem.appendChild(taskText);
+        listItem.appendChild(todoText);
         listItem.appendChild(menu);
         listItem.appendChild(menuContent);
         taskList.appendChild(listItem);
     }
 
-    function addTaskToServer(task) {
-        if (task.trim() === '') return;
+    // Add to-do list to the server
+    function addTodoListToServer(text) {
+        if (text.trim() === '') return;
 
         fetch('/todolists', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ text: task })
+            body: JSON.stringify({ text })
         })
         .then(response => response.json())
-        .then(data => addTask(data.text, data._id, data.completed));
+        .then(data => addTodoList(data._id, data.text));
     }
 
-    function updateTaskCompletion(id, completed) {
+    function updateTodoCompletion(id, completed) {
         fetch(`/todolists/${id}`, {
             method: 'PUT',
             headers: {
@@ -103,24 +104,29 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function deleteTaskFromServer(id) {
+    function deleteTodoFromServer(id) {
         fetch(`/todolists/${id}`, {
             method: 'DELETE'
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.error('Failed to delete to-do list item:', response.statusText); // Debugging line
+            }
         });
     }
 
-    updateTaskButton.addEventListener('click', () => {
-        if (currentTask) {
-            fetch(`/todolists/${currentTask.dataset.id}`, {
+    updateTodoButton.addEventListener('click', () => {
+        if (currentTodo) {
+            fetch(`/todolists/${currentTodo.dataset.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ text: updateTaskInput.value })
+                body: JSON.stringify({ text: updateTodoInput.value })
             })
             .then(response => response.json())
             .then(data => {
-                currentTask.querySelector('.task-text').textContent = data.text;
+                currentTodo.querySelector('.task-text').textContent = data.text;
                 updateModal.style.display = 'none';
             });
         }

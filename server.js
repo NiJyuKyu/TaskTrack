@@ -11,7 +11,6 @@ const app = express();
 const PORT = process.env.PORT || 3003;
 const JWT_SECRET = 'your_jwt_secret_key'; // You should use environment variables for secrets
 
-
 // Database connection
 mongoose.connect('mongodb://localhost:27017/tasktrack', {
     useNewUrlParser: true,
@@ -113,9 +112,9 @@ function verifyToken(req, res, next) {
 app.use(express.static('public'));
 
 // Routes
-app.use('/tasks', tasksRoutes);
-app.use('/notes', noteRoutes); // Added route
-app.use('/todolists', toDoListRoutes); // Added route
+app.use('/tasks', tasksRoutes); // Tasks route
+app.use('/notes', noteRoutes); // Notes route
+app.use('/todolists', toDoListRoutes); // To-Do Lists route
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

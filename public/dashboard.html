@@ -48,7 +48,6 @@
                         <button class="dropbtn">Profile Options</button>
                         <div class="dropdown-content">
                             <a href="#" id="edit-profile">Edit Profile</a>
-                            <a href="#" id="settings">Settings</a>
                             <a href="#" id="logout">Logout</a>
                         </div>
                     </div>
@@ -140,9 +139,10 @@
                     </div>
                 </div>
             </div>
-            <div class="project-tasks" id="tasks-page" style="display: none;">
+            <<div class="project-tasks" id="tasks-page" style="display: none;">
                 <h1>TaskTrack Sprint</h1>
                 <button id="addTaskButton">Add Task</button>
+                <input type="text" id="new-task">
                 <table>
                     <thead>
                         <tr>
@@ -155,13 +155,14 @@
                         </tr>
                     </thead>
                     <tbody id="taskList">
+                        <input type="text" id="new-task">
                         <!-- Tasks will be dynamically added here -->
                     </tbody>
                 </table>
             </div>
             <!-- Update Task Modal -->
             <div id="updateTaskModal" style="display:none;">
-            <h2>Update Task</h2>
+                <h2>Update Task</h2>
                 <label for="updateTaskName">Name:</label>
                 <input type="text" id="updateTaskName">
                 <label for="updateTaskAssignee">Assignee:</label>
@@ -173,7 +174,7 @@
                 <label for="updateTaskStatus">Status:</label>
                 <select id="updateTaskStatus">
                     <option value="To-Do">To-Do</option>
-                    <option value="Incomplete">Incomplete</option>
+                    <option value="Incomplete">Ongoing</option>
                     <option value="Complete">Complete</option>
                 </select>
                 <button id="saveUpdateButton">Save</button>
