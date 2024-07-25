@@ -223,30 +223,28 @@ function updateProfileDisplay() {
     document.getElementById('profile-pic').src = currentUser.profilePicture || '/default-profile-pic.png';
 }
 
-// Function to handle logout
-document.addEventListener('DOMContentLoaded', function() {
-  // Handle logout
-    const logoutButton = document.getElementById('logout');
-    logoutButton.addEventListener('click', function(e) {
-        e.preventDefault();
-        fetch('/api/logout', { method: 'POST' })
-            .then(response => {
-                if (response.ok) {
-                    // Clear any client-side stored data
-                    localStorage.removeItem('userToken'); // Example for token-based authentication
-                    sessionStorage.clear(); // Clear session storage if needed
-
-                    // Redirect to login page
-                    window.location.href = '/login'; // Replace with your actual login page URL
-                } else {
-                    // Handle error case if needed
-                    console.error('Logout failed');
-                }
-            })
-            .catch(error => {
-                console.error('Error during logout:', error);
-            });
-    });
+logoutButton.addEventListener('click', () => {
+  fetch('/logout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+  })
+  .then(response => {
+      if (!response.ok) {
+          throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
+      }
+      return response.json(); // Make sure to parse the response as JSON
+  })
+  .then(data => {
+      if (data.message === 'Logged out successfully') {
+          window.location.href = '/login'; // Redirect to login page
+      } else {
+          alert('Logout failed. Please try again.');
+      }
+  })
+  .catch(error => {
+      console.error('Error logging out:', error);
+      alert('Failed to log out. Please try again.');
+  });
 });
 
 
@@ -362,3 +360,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+

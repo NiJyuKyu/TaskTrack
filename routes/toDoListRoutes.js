@@ -30,7 +30,10 @@ router.put('/:id', async (req, res) => {
         if (!updatedTodo) {
             return res.status(404).json({ error: 'Todo not found' });
         }
-        res.status(200).json(updatedTodo);
+        res.status(200).json({
+            _id: updatedTodo._id,
+            text: updatedTodo.text
+        });
     } catch (error) {
         console.error('Error updating todo:', error);
         res.status(500).json({ error: 'Failed to update todo', message: error.message });

@@ -9,7 +9,7 @@ const toDoListRoutes = require('./routes/toDoListRoutes');
 require('dotenv').config(); // Load environment variables
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key'; // Use environment variables for secrets
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/tasktrack';
 
@@ -45,7 +45,6 @@ app.post('/signup', async (req, res) => {
         await newUser.save();
         res.status(201).json({ message: 'User created, please log in' });
     } catch (err) {
-        console.error('Signup Error:', err);
         res.status(400).json({ error: err.message });
     }
 });
@@ -75,10 +74,18 @@ app.get('/api/check-auth', verifyToken, async (req, res) => {
         if (!user) return res.json({ authenticated: false });
         res.json({ authenticated: true, user });
     } catch (error) {
-        console.error('Check Auth Error:', error);
         res.status(500).json({ message: 'Server error' });
     }
 });
+
+// Middleware to handle session or authentication
+const session = require('express-session');
+app.use(session({
+    secret: 'your-secret-key',
+    resave: false,
+    saveUninitialized: true
+}));
+
 
 // Middleware to verify JWT token
 function verifyToken(req, res, next) {
@@ -93,41 +100,6 @@ function verifyToken(req, res, next) {
         next();
     });
 }
-
-const NoteSchema = new mongoose.Schema({
-    title: String,
-    description: String
-});
-
-const Note = mongoose.model('Note', NoteSchema);
-
-// Create a new note
-app.post('/notes', (req, res) => {
-    const newNote = new Note({
-        title: req.body.title,
-        description: req.body.description
-    });
-    newNote.save()
-        .then(note => res.json(note))
-        .catch(err => res.status(500).json({ error: err.message }));
-});
-
-// Update a note
-app.put('/notes/:id', (req, res) => {
-    Note.findByIdAndUpdate(req.params.id, {
-        title: req.body.title,
-        description: req.body.description
-    }, { new: true })
-        .then(note => res.json(note))
-        .catch(err => res.status(500).json({ error: err.message }));
-});
-
-// Delete a note
-app.delete('/notes/:id', (req, res) => {
-    Note.findByIdAndDelete(req.params.id)
-        .then(() => res.status(204).end())
-        .catch(err => res.status(500).json({ error: err.message }));
-});
 
 // Routes
 app.use('/tasks', tasksRoutes);
