@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Set user profile
   const profileName = document.getElementById('profile-name');
   const profilePic = document.getElementById('profile-pic');
-  profileName.textContent = 'John Doe'; // Replace with actual user name
+  profileName.textContent = 'Mae'; // Replace with actual user name
   profilePic.src = 'path/to/profile-picture.jpg'; // Replace with actual profile picture path
 
   // Handle edit profile modal

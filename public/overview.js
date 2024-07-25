@@ -1,43 +1,33 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const profileModal = document.getElementById('editProfileModal');
-    const closeModal = document.querySelector('.modal .close');
-    
-    // Open and close profile modal
-    document.getElementById('edit-profile').addEventListener('click', function() {
-        profileModal.style.display = 'block';
-    });
-
-    closeModal.addEventListener('click', function() {
-        profileModal.style.display = 'none';
-    });
-
-    window.onclick = function(event) {
-        if (event.target == profileModal) {
-            profileModal.style.display = 'none';
-        }
-    };
-
-    // Sample data for overview page
-    document.getElementById('tasks-completed').textContent = '10';
-    document.getElementById('pending-tasks').textContent = '5';
-    document.getElementById('upcoming-events').textContent = '3';
-
+document.addEventListener('DOMContentLoaded', () => {
+    const tasksCompletedElement = document.getElementById('tasks-completed');
+    const pendingTasksElement = document.getElementById('pending-tasks');
+    const upcomingEventsElement = document.getElementById('upcoming-tasks');
     const taskSummaryList = document.getElementById('task-summary-list');
 
-    // Example tasks
-    const tasks = [
-        { name: 'Task 1', status: 'Complete', dueDate: '2024-07-25' },
-        { name: 'Task 2', status: 'Incomplete', dueDate: '2024-07-30' },
-        { name: 'Task 3', status: 'To-Do', dueDate: '2024-08-05' }
-    ];
+    // Fetch task data from the server
+    fetch('/api/tasks') // Adjust the endpoint based on your server configuration
+        .then(response => response.json())
+        .then(data => {
+            const tasks = data.tasks;
+            
+            // Calculate tasks statistics
+            const tasksCompleted = tasks.filter(task => task.status === 'Complete').length;
+            const pendingTasks = tasks.filter(task => task.status === 'Pending').length;
+            const upcomingEvents = tasks.filter(task => new Date(task.dueDate) > new Date()).length;
 
-    tasks.forEach(task => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${task.name}</td>
-            <td>${task.status}</td>
-            <td>${task.dueDate}</td>
-        `;
-        taskSummaryList.appendChild(row);
-    });
+            // Update statistics
+            tasksCompletedElement.textContent = tasksCompleted;
+            pendingTasksElement.textContent = pendingTasks;
+            upcomingEventsElement.textContent = upcomingEvents;
+
+            // Generate task summary table
+            taskSummaryList.innerHTML = tasks.map(task => `
+                <tr>
+                    <td>${task.name}</td>
+                    <td>${task.status}</td>
+                    <td>${new Date(task.dueDate).toLocaleDateString()}</td>
+                </tr>
+            `).join('');
+        })
+        .catch(error => console.error('Error fetching tasks:', error));
 });

@@ -32,7 +32,7 @@ input[type="text"] {
 button {
     width: 100%;
     padding: 10px;
-    background-color:#ff4b2b;
+    background-color: #ff4b2b;
     color: white;
     border: none;
     border-radius: 3px;
@@ -130,4 +130,203 @@ li .menu-content button:hover {
     align-self: flex-end;
     font-size: 25px;
     cursor: pointer;
+}
+
+/* New styles for To-Do List */
+.sidebar-right {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    display: flex;
+    flex-direction: column;
+}
+
+#new-task {
+    margin-bottom: 10px;
+}
+
+#task-list {
+    list-style: none;
+    padding: 0;
+}
+
+#task-list li {
+    background: #f9f9f9;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 3px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.update-task-button, .delete-task-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #ff4b2b;
+    font-size: 14px;
+}
+
+.update-task-button:hover, .delete-task-button:hover {
+    color: #f53614;
+}
+
+/* Sidebar styles */
+.sidebar-right {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    position: fixed;
+    right: -300px; /* Initially hide the sidebar */
+    top: 0;
+    height: 100%;
+    overflow-y: auto;
+    transition: right 0.3s; /* Smooth transition */
+}
+
+/* Show the sidebar when it's active */
+.sidebar-right.active {
+    right: 0;
+}
+
+/* Modal Overlay */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000; /* Ensure it is above other content */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 400px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Close button for modal */
+.close-button {
+    align-self: flex-end;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+/* Close button for sidebar */
+.close-sidebar {
+    background: none;
+    border: none;
+    font-size: 25px;
+    cursor: pointer;
+    color: #ff4b2b;
+}
+
+/* Add smooth transition for the modal */
+.modal-overlay {
+    display: block; /* Always display overlay */
+}
+
+/* Style for the sidebar toggle icon */
+.sidebar-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #ff4b2b;
+    color: white;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.sidebar-toggle i {
+    font-size: 20px;
+}
+
+/* Style for the sidebar */
+.sidebar-right {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 300px; /* Adjust width as needed */
+    height: 100%;
+    background: #f4f4f4;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    display: none; /* Hide sidebar by default */
+    overflow-y: auto;
+    z-index: 999;
+}
+
+/* Show sidebar when 'active' class is added */
+.sidebar-right.active {
+    display: block;
+}
+
+/* Style for the modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+/* Modal overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    z-index: 1000;
 }

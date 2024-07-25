@@ -9,10 +9,6 @@ body {
   background-size: cover;
 }
 
-.container {
-  display: flex;
-  flex: 1;
-}
 
 .sidebar-left {
   width: 250px;
@@ -87,35 +83,6 @@ body {
   margin-bottom: 20px;
 }
 
-.project-title {
-  display: flex;
-  align-items: center;
-}
-
-.project-name {
-  font-size: 20px;
-  font-weight: bold;
-  margin-right: 10px;
-}
-
-.project-details {
-  display: flex;
-  align-items: center;
-}
-
-.project-status {
-  padding: 5px 10px;
-  border-radius: 20px;
-  background-color: #f0f0f0;
-  margin-right: 5px;
-  font-size: 14px;
-}
-
-.project-overview,
-.feature-content {
-  display: none;
-}
-
 .feature-content.active {
   display: block;
 }
@@ -142,11 +109,6 @@ body {
   margin-top: 0;
 }
 
-#tasks-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  grid-gap: 20px;
-}
 
 .task-card {
   background-color: #fff;
@@ -312,46 +274,6 @@ body {
   cursor: pointer;
 }
 
-.projects-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.projects-list {
-  list-style: none;
-  padding: 0;
-}
-
-.project-item {
-  display: flex;
-  align-items: center;
-  padding: 10px 15px;
-  border-bottom: 1px solid #eee;
-  cursor: pointer;
-}
-
-.project-icon {
-  margin-right: 10px;
-}
-
-.project-icon i {
-  font-size: 20px;
-}
-
-.project-name {
-  font-size: 16px;
-  font-weight: bold;
-  margin-right: 10px;
-}
-
-.project-progress {
-  margin-left: auto;
-  font-size: 14px;
-  color: #888;
-}
-
 .profile {
   display: flex;
   align-items: center;
@@ -461,7 +383,7 @@ body {
 
 button {
   background-color: #d61212;
-  color: white;
+  color: rgb(109, 15, 15);
   border: none;
   padding: 10px 20px;
   cursor: pointer;
@@ -532,7 +454,7 @@ thead th {
 }
 
 tbody tr {
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #cd1c1c;
   transition: background-color 0.3s;
 }
 

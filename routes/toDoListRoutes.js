@@ -1,68 +1,54 @@
 const express = require('express');
 const router = express.Router();
-const TodoList = require('../models/ToDoList'); // Correct path to the model
+const TodoList = require('../models/ToDoList');
 
-// Get all to-do list items
-router.get('/', async (req, res) => {
-    try {
-        const todoLists = await TodoList.find();
-        res.json(todoLists);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching to-do lists', error });
-    }
-});
-
-// Add a new to-do list item
+// Create a new to-do
 router.post('/', async (req, res) => {
+    const { text } = req.body;
+    if (!text || typeof text !== 'string') {
+        return res.status(400).json({ error: 'Invalid text input' });
+    }
     try {
-        const { text } = req.body;
-
-        // Basic validation
-        if (!text || typeof text !== 'string') {
-            return res.status(400).json({ message: 'Invalid input' });
-        }
-
-        const todoList = new TodoList({ text });
-        await todoList.save();
-        res.status(201).json(todoList);
+        const newTodo = new TodoList({ text });
+        const savedTodo = await newTodo.save();
+        res.status(201).json(savedTodo);
     } catch (error) {
-        res.status(500).json({ message: 'Error adding to-do list item', error });
+        console.error('Error saving todo:', error);
+        res.status(500).json({ error: 'Failed to add todo', message: error.message });
     }
 });
 
-// Update a to-do list item
+// Update a to-do
 router.put('/:id', async (req, res) => {
+    const { id } = req.params;
+    const { text } = req.body;
+    if (text && typeof text !== 'string') {
+        return res.status(400).json({ error: 'Invalid text input' });
+    }
     try {
-        const { text, completed } = req.body;
-
-        // Basic validation
-        if (text && typeof text !== 'string') {
-            return res.status(400).json({ message: 'Invalid text input' });
+        const updatedTodo = await TodoList.findByIdAndUpdate(id, { text }, { new: true });
+        if (!updatedTodo) {
+            return res.status(404).json({ error: 'Todo not found' });
         }
-        if (completed !== undefined && typeof completed !== 'boolean') {
-            return res.status(400).json({ message: 'Invalid completed input' });
-        }
-
-        const todoList = await TodoList.findByIdAndUpdate(req.params.id, { text, completed }, { new: true });
-        if (!todoList) {
-            return res.status(404).json({ message: 'To-do list item not found' });
-        }
-        res.json(todoList);
+        res.status(200).json(updatedTodo);
     } catch (error) {
-        res.status(500).json({ message: 'Error updating to-do list item', error });
+        console.error('Error updating todo:', error);
+        res.status(500).json({ error: 'Failed to update todo', message: error.message });
     }
 });
 
-// Delete a to-do list item
+// Delete a to-do
 router.delete('/:id', async (req, res) => {
+    const { id } = req.params;
     try {
-        const todoList = await TodoList.findByIdAndDelete(req.params.id);
-        if (!todoList) {
-            return res.status(404).json({ message: 'To-do list item not found' });
+        const deletedTodo = await TodoList.findByIdAndDelete(id);
+        if (!deletedTodo) {
+            return res.status(404).json({ error: 'Todo not found' });
         }
-        res.json({ message: 'To-do list item deleted' });
+        res.status(200).json({ message: 'Todo deleted' });
     } catch (error) {
-        res.status(500).json({ message: 'Error deleting to-do list item', error });
+        console.error('Error deleting todo:', error);
+        res.status(500).json({ error: 'Failed to delete todo', message: error.message });
     }
 });
 

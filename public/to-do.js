@@ -1,96 +1,171 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const taskInput = document.getElementById('new-task');
-    const addTodoButton = document.getElementById('add-task-button');
-    const taskList = document.getElementById('task-list');
+    const titleInput = document.getElementById('new-todo-title');
+    const addTodoButton = document.getElementById('add-todo-button');
+    const todoList = document.getElementById('todo-list');
+    const updateTitleInput = document.getElementById('update-title-input');
+    const updateTodoButton = document.getElementById('update-todo-button');
+    const cancelUpdateButton = document.querySelector('#update-modal .close-button');
+    const modalOverlay = document.getElementById('modal-overlay');
+    const toggleSidebarIcon = document.getElementById('sidebar-toggle-icon');
+    const sidebar = document.getElementById('todo-sidebar');
 
-    const updateModal = document.getElementById('update-modal');
-    const updateTaskInput = document.getElementById('update-task-input');
-    const updateTaskButton = document.getElementById('update-task-button');
-    const closeButton = document.querySelector('.close-button');
-    
-    let currentTask = null;
+    let currentTodo = null;
 
-    // Load to-dos from the server
-    fetch('/todolists')
-        .then(response => response.json())
-        .then(todos => {
-            todos.forEach(todo => addTodoToDOM(todo._id, todo.title));
-        })
-        .catch(error => console.error('Error loading to-dos:', error));
-
-    addTodoButton.addEventListener('click', () => {
-        const title = titleInput.value;
-        addTodoToServer(title);
-        titleInput.value = ''; // Clear input field after adding the to-do
+    // Toggle sidebar visibility
+    toggleSidebarIcon.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
     });
 
-    taskInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            addTask(taskInput.value);
-            taskInput.value = '';
+    // Close sidebar if clicked outside of it
+    document.addEventListener('click', (event) => {
+        if (!sidebar.contains(event.target) && !toggleSidebarIcon.contains(event.target)) {
+            sidebar.classList.remove('active');
         }
     });
 
-    function addTask(task) {
-        if (task.trim() === '') return;
+    // Add to-do button click event
+    addTodoButton.addEventListener('click', () => {
+        const title = titleInput.value.trim();
+        if (title) {
+            addTodoToServer(title);
+            titleInput.value = '';
+        } else {
+            alert('Please enter a to-do.');
+        }
+    });
 
-        const listItem = document.createElement('li');
+    // Add to-do on Enter key press
+    titleInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const title = titleInput.value.trim();
+            if (title) {
+                addTodoToServer(title);
+                titleInput.value = '';
+            } else {
+                alert('Please enter a to-do.');
+            }
+        }
+    });
 
-        const taskText = document.createElement('span');
-        taskText.textContent = task;
-        taskText.classList.add('task-text');
-        taskText.addEventListener('click', () => {
-            taskText.classList.toggle('completed');
+    // Add to-do to server
+    function addTodoToServer(title) {
+        fetch('/api/todolists', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: title })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            addTodoToDOM(data._id, data.text);
+        })
+        .catch(error => {
+            console.error('Error adding todo:', error);
+            alert(`Failed to add todo: ${error.message}`);
         });
+    }
 
-        const menu = document.createElement('span');
-        menu.textContent = '⋮';
-        menu.classList.add('menu');
-        menu.addEventListener('click', () => {
-            const menuContent = listItem.querySelector('.menu-content');
-            menuContent.style.display = menuContent.style.display === 'block' ? 'none' : 'block';
-        });
-
-        const menuContent = document.createElement('div');
-        menuContent.classList.add('menu-content');
+    // Add to-do to DOM
+    function addTodoToDOM(id, text) {
+        const todoElement = document.createElement('li');
+        todoElement.textContent = text;
+        todoElement.dataset.id = id;
 
         const updateButton = document.createElement('button');
         updateButton.textContent = 'Update';
+        updateButton.classList.add('update-task-button');
         updateButton.addEventListener('click', () => {
-            currentTask = listItem;
-            updateTaskInput.value = taskText.textContent;
-            updateModal.style.display = 'flex';
-            menuContent.style.display = 'none';
+            currentTodo = todoElement;
+            updateTitleInput.value = text;
+            openUpdateModal();
         });
 
         const deleteButton = document.createElement('button');
         deleteButton.textContent = 'Delete';
+        deleteButton.classList.add('delete-task-button');
         deleteButton.addEventListener('click', () => {
-            listItem.remove();
+            deleteTodoFromServer(id, todoElement);
         });
 
-        menuContent.appendChild(updateButton);
-        menuContent.appendChild(deleteButton);
-        listItem.appendChild(taskText);
-        listItem.appendChild(menu);
-        listItem.appendChild(menuContent);
-        taskList.appendChild(listItem);
+        todoElement.appendChild(updateButton);
+        todoElement.appendChild(deleteButton);
+        todoList.appendChild(todoElement);
     }
 
-    updateTaskButton.addEventListener('click', () => {
-        if (currentTask) {
-            currentTask.querySelector('.task-text').textContent = updateTaskInput.value;
-            updateModal.style.display = 'none';
+    // Update to-do on server
+    function updateTodoOnServer(id, newText) {
+        fetch(`/api/todolists/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: newText })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(() => {
+            currentTodo.childNodes[0].textContent = newText;
+            closeUpdateModal();
+        })
+        .catch(error => {
+            console.error('Error updating todo:', error);
+            alert('Failed to update todo. Please try again.');
+        });
+    }
+
+    // Delete to-do from server
+    function deleteTodoFromServer(id, todoElement) {
+        fetch(`/api/todolists/${id}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
+            }
+            todoElement.remove();
+            if (todoList.children.length === 0) {
+                const emptyMessage = document.createElement('p');
+                emptyMessage.textContent = 'No to-dos yet.';
+                todoList.appendChild(emptyMessage);
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting todo:', error);
+            alert('Failed to delete todo. Please try again.');
+        });
+    }
+
+    // Update to-do button click event
+    updateTodoButton.addEventListener('click', () => {
+        if (currentTodo) {
+            const newText = updateTitleInput.value.trim();
+            if (newText) {
+                const id = currentTodo.dataset.id;
+                updateTodoOnServer(id, newText);
+            } else {
+                alert('Please enter a new text.');
+            }
         }
     });
 
-    closeButton.addEventListener('click', () => {
-        updateModal.style.display = 'none';
-    });
+    // Open update modal
+    function openUpdateModal() {
+        document.getElementById('update-modal').style.display = 'flex';
+        modalOverlay.style.display = 'block';
+    }
 
-    window.addEventListener('click', (event) => {
-        if (event.target === updateModal) {
-            updateModal.style.display = 'none';
-        }
-    });
+    // Close update modal
+    function closeUpdateModal() {
+        document.getElementById('update-modal').style.display = 'none';
+        modalOverlay.style.display = 'none';
+    }
+
+    // Close modal when clicking on overlay
+    modalOverlay.addEventListener('click', closeUpdateModal);
 });

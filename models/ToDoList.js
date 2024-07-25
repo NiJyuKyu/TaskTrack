@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 
 const todoListSchema = new mongoose.Schema({
-    text: { type: String, required: true },
-    completed: { type: Boolean, default: false }
+    text: { type: String, required: true }
 });
 
-module.exports = mongoose.model('TodoList', todoListSchema);
+const TodoList = mongoose.model('TodoList', todoListSchema);
+
+module.exports = TodoList;

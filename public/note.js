@@ -1,113 +1,175 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const titleInput = document.getElementById('noteTitle');
-    const contentInput = document.getElementById('noteContent');
+    const openAddNoteModalButton = document.getElementById('openAddNoteModalButton');
+    const addNoteModal = document.getElementById('addNoteModal');
+    const closeAddNoteModalButton = document.getElementById('closeAddNoteModalButton');
     const addNoteButton = document.getElementById('addNoteButton');
+    const noteTitleInput = document.getElementById('noteTitle');
+    const noteDescriptionInput = document.getElementById('noteDescription');
     const notesContainer = document.getElementById('notesContainer');
-
-    const updateModal = document.getElementById('updateNoteModal');
+  
+    const updateNoteModal = document.getElementById('updateNoteModal');
+    const closeUpdateNoteModalButton = document.getElementById('closeUpdateNoteModalButton');
+    const saveUpdateButton = document.getElementById('saveUpdateButton');
     const updateNoteTitle = document.getElementById('updateNoteTitle');
-    const updateNoteContent = document.getElementById('updateNoteContent');
-    const saveUpdateButton = document.getElementById('saveUpdateNoteButton');
-    const cancelUpdateButton = document.getElementById('cancelUpdateNoteButton');
-
+    const updateNoteDescription = document.getElementById('updateNoteDescription');
+  
+    const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+    const closeDeleteConfirmModalButton = document.getElementById('closeDeleteConfirmModalButton');
+    const confirmDeleteButton = document.getElementById('confirmDeleteButton');
+    const cancelDeleteButton = document.getElementById('cancelDeleteButton');
+  
     let currentNote = null;
-
-    // Load notes from the server
-    fetch('/notes')
-        .then(response => response.json())
-        .then(notes => {
-            notes.forEach(note => addNoteToDOM(note._id, note.title, note.content));
-        })
-        .catch(error => console.error('Error loading notes:', error));
-
+    let noteToDelete = null;
+  
+    // Open Add Note Modal
+    openAddNoteModalButton.addEventListener('click', () => {
+      addNoteModal.style.display = 'block';
+      noteTitleInput.focus(); // Set focus on title input
+    });
+  
+    // Close Add Note Modal
+    closeAddNoteModalButton.addEventListener('click', () => {
+      addNoteModal.style.display = 'none';
+      noteTitleInput.value = ''; // Clear title input
+      noteDescriptionInput.value = ''; // Clear description input
+    });
+  
+    // Add Note
     addNoteButton.addEventListener('click', () => {
-        const title = titleInput.value;
-        const content = contentInput.value;
-        addNoteToServer(title, content);
-        titleInput.value = ''; // Clear input fields after adding the note
-        contentInput.value = '';
+      const title = noteTitleInput.value.trim();
+      const description = noteDescriptionInput.value.trim();
+      if (title && description) {
+        addNoteToServer(title, description)
+          .then(() => {
+            noteTitleInput.value = ''; // Clear title input
+            noteDescriptionInput.value = ''; // Clear description input
+            addNoteModal.style.display = 'none';
+          })
+          .catch((error) => console.error('Error adding note:', error));
+      }
     });
-
-    function addNoteToServer(title, content) {
-        if (title.trim() === '' || content.trim() === '') return; // Do not add empty notes
-
-        fetch('/notes', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ title, content })
-        })
-        .then(response => response.json())
-        .then(data => addNoteToDOM(data._id, data.title, data.content))
-        .catch(error => console.error('Error adding note:', error));
-    }
-
-    function addNoteToDOM(id, title, content) {
-        const noteElement = document.createElement('div');
-        noteElement.classList.add('note');
-        noteElement.dataset.id = id;
-
-        noteElement.innerHTML = `
-            <h3>${title}</h3>
-            <p>${content}</p>
-            <button class="update-note-button">Update</button>
-            <button class="delete-note-button">Delete</button>
-        `;
-
-        noteElement.querySelector('.update-note-button').addEventListener('click', () => {
-            currentNote = noteElement;
-            updateNoteTitle.value = title;
-            updateNoteContent.value = content;
-            updateModal.style.display = 'block';
+  
+    function addNoteToServer(title, description) {
+      return fetch('/notes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, description }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data && data._id && data.title && data.description) {
+            addNoteToDOM(data._id, data.title, data.description);
+          } else {
+            console.error('Invalid data received from server:', data);
+          }
         });
-
-        noteElement.querySelector('.delete-note-button').addEventListener('click', () => {
-            deleteNoteFromServer(id);
-            noteElement.remove();
-        });
-
-        notesContainer.appendChild(noteElement);
     }
-
-    function deleteNoteFromServer(id) {
-        fetch(`/notes/${id}`, {
-            method: 'DELETE'
-        })
-        .then(response => {
-            if (!response.ok) throw new Error('Network response was not ok');
-            console.log('Note deleted successfully');
-        })
-        .catch(error => console.error('Error deleting note:', error));
+  
+    function addNoteToDOM(id, title, description) {
+      const noteElement = document.createElement('li');
+      noteElement.classList.add('note');
+      noteElement.dataset.id = id;
+  
+      noteElement.innerHTML = `
+        <h3>${title}</h3>
+        <p>${description}</p>
+        <button class="update-note-button">Update</button>
+        <button class="delete-note-button">Delete</button>
+      `;
+  
+      noteElement.querySelector('.update-note-button').addEventListener('click', () => {
+        currentNote = noteElement;
+        updateNoteTitle.value = title;
+        updateNoteDescription.value = description;
+        updateNoteModal.style.display = 'block';
+      });
+  
+      noteElement.querySelector('.delete-note-button').addEventListener('click', () => {
+        noteToDelete = noteElement;
+        deleteConfirmModal.style.display = 'block';
+      });
+  
+      notesContainer.appendChild(noteElement);
     }
-
+  
+    // Close Update Note Modal
+    closeUpdateNoteModalButton.addEventListener('click', () => {
+      updateNoteModal.style.display = 'none';
+    });
+  
+    // Update Note
     saveUpdateButton.addEventListener('click', () => {
-        if (currentNote) {
-            fetch(`/notes/${currentNote.dataset.id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    title: updateNoteTitle.value,
-                    content: updateNoteContent.value
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                currentNote.querySelector('h3').textContent = data.title;
-                currentNote.querySelector('p').textContent = data.content;
-                updateModal.style.display = 'none';
-            })
-            .catch(error => console.error('Error updating note:', error));
-        }
+      if (currentNote) {
+        const title = updateNoteTitle.value.trim();
+        const description = updateNoteDescription.value.trim();
+        updateNoteOnServer(currentNote.dataset.id, title, description)
+          .then(() => {
+            currentNote.querySelector('h3').textContent = title;
+            currentNote.querySelector('p').textContent = description;
+            updateNoteModal.style.display = 'none';
+          })
+          .catch((error) => console.error('Error updating note:', error));
+      }
     });
-
-    cancelUpdateButton.addEventListener('click', () => {
-        updateModal.style.display = 'none';
+  
+    function updateNoteOnServer(id, title, description) {
+      return fetch(`/notes/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, description }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data && data.title && data.description) {
+            return data;
+          } else {
+            console.error('Invalid data received from server:', data);
+            throw new Error('Invalid data');
+          }
+        });
+    }
+  
+    // Close Delete Confirmation Modal
+    closeDeleteConfirmModalButton.addEventListener('click', () => {
+      deleteConfirmModal.style.display = 'none';
     });
-
+  
+    // Confirm Delete
+    confirmDeleteButton.addEventListener('click', () => {
+      if (noteToDelete) {
+        deleteNoteOnServer(noteToDelete.dataset.id)
+          .then(() => {
+            noteToDelete.remove();
+            deleteConfirmModal.style.display = 'none';
+          })
+          .catch((error) => console.error('Error deleting note:', error));
+      }
+    });
+  
+    function deleteNoteOnServer(id) {
+      return fetch(`/notes/${id}`, {
+        method: 'DELETE',
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+        });
+    }
+  
+    // Cancel Delete
+    cancelDeleteButton.addEventListener('click', () => {
+      deleteConfirmModal.style.display = 'none';
+    });
+  
+    // Close modals when clicking outside of them
     window.addEventListener('click', (event) => {
-        if (event.target === updateModal) {
-            updateModal.style.display = 'none';
-        }
+      if (event.target === addNoteModal) {
+        addNoteModal.style.display = 'none';
+      } else if (event.target === updateNoteModal) {
+        updateNoteModal.style.display = 'none';
+      } else if (event.target === deleteConfirmModal) {
+        deleteConfirmModal.style.display = 'none';
+      }
     });
 });

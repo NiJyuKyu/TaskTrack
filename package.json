@@ -25,5 +25,17 @@
   },
   "description": "",
   "username": "your_username",
-  "password": "your_password"
+  "password": "your_password",
+  "tasks": [
+        {
+            "name": "Task 1",
+            "status": "Complete",
+            "dueDate": "2024-07-30T00:00:00Z"
+        },
+        {
+            "name": "Task 2",
+            "status": "Pending",
+            "dueDate": "2024-08-15T00:00:00Z"
+        }
+    ]
 }

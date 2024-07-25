@@ -1,10 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const Note = require('../models/Note'); // Corrected path to the model
+const Note = require('../models/Note');
 
-// Define your routes for notes here
+// Middleware to validate note data
+function validateNoteData(req, res, next) {
+    const { title, description } = req.body;
+    if (!title || !description) {
+        return res.status(400).json({ message: 'Title and description are required' });
+    }
+    next();
+}
 
-// Example route: Get all notes
+// Get all notes
 router.get('/', async (req, res) => {
     try {
         const notes = await Note.find();
@@ -14,12 +21,12 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Example route: Add a new note
-router.post('/', async (req, res) => {
+// Add a new note
+router.post('/', validateNoteData, async (req, res) => {
+    const { title, description } = req.body;
     const note = new Note({
-        // Define the fields for the new note
-        title: req.body.title,
-        content: req.body.content,
+        title,
+        description,
     });
 
     try {
@@ -30,20 +37,26 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Example route: Update a note
-router.put('/:id', async (req, res) => {
+// Update a note
+router.put('/:id', validateNoteData, async (req, res) => {
     try {
         const note = await Note.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!note) {
+            return res.status(404).json({ message: 'Note not found' });
+        }
         res.json(note);
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
 });
 
-// Example route: Delete a note
+// Delete a note
 router.delete('/:id', async (req, res) => {
     try {
-        await Note.findByIdAndDelete(req.params.id);
+        const note = await Note.findByIdAndDelete(req.params.id);
+        if (!note) {
+            return res.status(404).json({ message: 'Note not found' });
+        }
         res.json({ message: 'Note deleted' });
     } catch (err) {
         res.status(500).json({ message: err.message });
