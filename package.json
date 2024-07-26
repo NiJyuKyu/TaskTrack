@@ -5,9 +5,11 @@
     "body-parser": "^1.20.2",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "express-session": "^1.18.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.5.1",
-    "multer": "^1.4.5-lts.1"
+    "multer": "^1.4.5-lts.1",
+    "node-fetch": "^3.3.2"
   },
   "name": "task-track",
   "version": "1.0.0",
@@ -27,15 +29,16 @@
   "username": "your_username",
   "password": "your_password",
   "tasks": [
-        {
-            "name": "Task 1",
-            "status": "Complete",
-            "dueDate": "2024-07-30T00:00:00Z"
-        },
-        {
-            "name": "Task 2",
-            "status": "Pending",
-            "dueDate": "2024-08-15T00:00:00Z"
-        }
-    ]
+    {
+      "name": "Task 1",
+      "status": "Complete",
+      "dueDate": "2024-07-30T00:00:00Z"
+    },
+    {
+      "name": "Task 2",
+      "status": "Pending",
+      "dueDate": "2024-08-15T00:00:00Z"
+    }
+  ],
+  "text": "Sample todo"
 }

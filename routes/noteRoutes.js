@@ -2,15 +2,6 @@ const express = require('express');
 const router = express.Router();
 const Note = require('../models/Note');
 
-// Middleware to validate note data
-function validateNoteData(req, res, next) {
-    const { title, description } = req.body;
-    if (!title || !description) {
-        return res.status(400).json({ message: 'Title and description are required' });
-    }
-    next();
-}
-
 // Get all notes
 router.get('/', async (req, res) => {
     try {
@@ -21,12 +12,11 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Add a new note
-router.post('/', validateNoteData, async (req, res) => {
-    const { title, description } = req.body;
+// Create a new note
+router.post('/', async (req, res) => {
     const note = new Note({
-        title,
-        description,
+        title: req.body.title,
+        content: req.body.content
     });
 
     try {
@@ -38,13 +28,23 @@ router.post('/', validateNoteData, async (req, res) => {
 });
 
 // Update a note
-router.put('/:id', validateNoteData, async (req, res) => {
+router.put('/:id', async (req, res) => {
     try {
-        const note = await Note.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!note) {
+        const note = await Note.findById(req.params.id);
+        if (note == null) {
             return res.status(404).json({ message: 'Note not found' });
         }
-        res.json(note);
+
+        if (req.body.title != null) {
+            note.title = req.body.title;
+        }
+        if (req.body.content != null) {
+            note.content = req.body.content;
+        }
+        note.updatedAt = Date.now();
+
+        const updatedNote = await note.save();
+        res.json(updatedNote);
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
@@ -53,10 +53,12 @@ router.put('/:id', validateNoteData, async (req, res) => {
 // Delete a note
 router.delete('/:id', async (req, res) => {
     try {
-        const note = await Note.findByIdAndDelete(req.params.id);
-        if (!note) {
+        const note = await Note.findById(req.params.id);
+        if (note == null) {
             return res.status(404).json({ message: 'Note not found' });
         }
+
+        await note.remove();
         res.json({ message: 'Note deleted' });
     } catch (err) {
         res.status(500).json({ message: err.message });

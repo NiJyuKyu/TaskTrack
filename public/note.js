@@ -1,175 +1,110 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
+    const notesContainer = document.getElementById('notesContainer');
     const openAddNoteModalButton = document.getElementById('openAddNoteModalButton');
     const addNoteModal = document.getElementById('addNoteModal');
     const closeAddNoteModalButton = document.getElementById('closeAddNoteModalButton');
     const addNoteButton = document.getElementById('addNoteButton');
-    const noteTitleInput = document.getElementById('noteTitle');
-    const noteDescriptionInput = document.getElementById('noteDescription');
-    const notesContainer = document.getElementById('notesContainer');
-  
+    const cancelAddNoteButton = document.getElementById('cancelAddNoteButton');
     const updateNoteModal = document.getElementById('updateNoteModal');
     const closeUpdateNoteModalButton = document.getElementById('closeUpdateNoteModalButton');
-    const saveUpdateButton = document.getElementById('saveUpdateButton');
-    const updateNoteTitle = document.getElementById('updateNoteTitle');
-    const updateNoteDescription = document.getElementById('updateNoteDescription');
-  
+    const saveUpdateNoteButton = document.getElementById('saveUpdateNoteButton');
     const deleteConfirmModal = document.getElementById('deleteConfirmModal');
     const closeDeleteConfirmModalButton = document.getElementById('closeDeleteConfirmModalButton');
     const confirmDeleteButton = document.getElementById('confirmDeleteButton');
     const cancelDeleteButton = document.getElementById('cancelDeleteButton');
-  
-    let currentNote = null;
-    let noteToDelete = null;
-  
-    // Open Add Note Modal
-    openAddNoteModalButton.addEventListener('click', () => {
-      addNoteModal.style.display = 'block';
-      noteTitleInput.focus(); // Set focus on title input
-    });
-  
-    // Close Add Note Modal
-    closeAddNoteModalButton.addEventListener('click', () => {
-      addNoteModal.style.display = 'none';
-      noteTitleInput.value = ''; // Clear title input
-      noteDescriptionInput.value = ''; // Clear description input
-    });
-  
-    // Add Note
+
+    let notes = [];
+    let currentNoteId = null;
+
+    function openModal(modal) {
+        modal.style.display = 'block';
+    }
+
+    function closeModal(modal) {
+        modal.style.display = 'none';
+    }
+
+    function renderNotes() {
+        notesContainer.innerHTML = '';
+        notes.forEach(note => {
+            const noteElement = document.createElement('div');
+            noteElement.className = 'note';
+            noteElement.innerHTML = `
+                <h3>${note.title}</h3>
+                <p>${note.content}</p>
+                <button class="edit-note" data-id="${note.id}">Edit</button>
+                <button class="delete-note" data-id="${note.id}">Delete</button>
+            `;
+            notesContainer.appendChild(noteElement);
+        });
+    }
+
+    function addNote(title, content) {
+        const newNote = {
+            id: Date.now(),
+            title: title,
+            content: content
+        };
+        notes.push(newNote);
+        renderNotes();
+    }
+
+    function updateNote(id, title, content) {
+        const index = notes.findIndex(note => note.id === id);
+        if (index !== -1) {
+            notes[index] = { ...notes[index], title, content };
+            renderNotes();
+        }
+    }
+
+    function deleteNote(id) {
+        notes = notes.filter(note => note.id !== id);
+        renderNotes();
+    }
+
+    openAddNoteModalButton.addEventListener('click', () => openModal(addNoteModal));
+    closeAddNoteModalButton.addEventListener('click', () => closeModal(addNoteModal));
+    cancelAddNoteButton.addEventListener('click', () => closeModal(addNoteModal));
+
     addNoteButton.addEventListener('click', () => {
-      const title = noteTitleInput.value.trim();
-      const description = noteDescriptionInput.value.trim();
-      if (title && description) {
-        addNoteToServer(title, description)
-          .then(() => {
-            noteTitleInput.value = ''; // Clear title input
-            noteDescriptionInput.value = ''; // Clear description input
-            addNoteModal.style.display = 'none';
-          })
-          .catch((error) => console.error('Error adding note:', error));
-      }
+        const title = document.getElementById('noteTitle').value;
+        const content = document.getElementById('noteContent').value;
+        if (title && content) {
+            addNote(title, content);
+            closeModal(addNoteModal);
+        }
     });
-  
-    function addNoteToServer(title, description) {
-      return fetch('/notes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, description }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data && data._id && data.title && data.description) {
-            addNoteToDOM(data._id, data.title, data.description);
-          } else {
-            console.error('Invalid data received from server:', data);
-          }
-        });
-    }
-  
-    function addNoteToDOM(id, title, description) {
-      const noteElement = document.createElement('li');
-      noteElement.classList.add('note');
-      noteElement.dataset.id = id;
-  
-      noteElement.innerHTML = `
-        <h3>${title}</h3>
-        <p>${description}</p>
-        <button class="update-note-button">Update</button>
-        <button class="delete-note-button">Delete</button>
-      `;
-  
-      noteElement.querySelector('.update-note-button').addEventListener('click', () => {
-        currentNote = noteElement;
-        updateNoteTitle.value = title;
-        updateNoteDescription.value = description;
-        updateNoteModal.style.display = 'block';
-      });
-  
-      noteElement.querySelector('.delete-note-button').addEventListener('click', () => {
-        noteToDelete = noteElement;
-        deleteConfirmModal.style.display = 'block';
-      });
-  
-      notesContainer.appendChild(noteElement);
-    }
-  
-    // Close Update Note Modal
-    closeUpdateNoteModalButton.addEventListener('click', () => {
-      updateNoteModal.style.display = 'none';
+
+    notesContainer.addEventListener('click', (e) => {
+        if (e.target.classList.contains('edit-note')) {
+            currentNoteId = parseInt(e.target.getAttribute('data-id'));
+            const note = notes.find(note => note.id === currentNoteId);
+            document.getElementById('updateNoteTitle').value = note.title;
+            document.getElementById('updateNoteContent').value = note.content;
+            openModal(updateNoteModal);
+        } else if (e.target.classList.contains('delete-note')) {
+            currentNoteId = parseInt(e.target.getAttribute('data-id'));
+            openModal(deleteConfirmModal);
+        }
     });
-  
-    // Update Note
-    saveUpdateButton.addEventListener('click', () => {
-      if (currentNote) {
-        const title = updateNoteTitle.value.trim();
-        const description = updateNoteDescription.value.trim();
-        updateNoteOnServer(currentNote.dataset.id, title, description)
-          .then(() => {
-            currentNote.querySelector('h3').textContent = title;
-            currentNote.querySelector('p').textContent = description;
-            updateNoteModal.style.display = 'none';
-          })
-          .catch((error) => console.error('Error updating note:', error));
-      }
+
+    closeUpdateNoteModalButton.addEventListener('click', () => closeModal(updateNoteModal));
+    saveUpdateNoteButton.addEventListener('click', () => {
+        const title = document.getElementById('updateNoteTitle').value;
+        const content = document.getElementById('updateNoteContent').value;
+        if (title && content) {
+            updateNote(currentNoteId, title, content);
+            closeModal(updateNoteModal);
+        }
     });
-  
-    function updateNoteOnServer(id, title, description) {
-      return fetch(`/notes/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, description }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data && data.title && data.description) {
-            return data;
-          } else {
-            console.error('Invalid data received from server:', data);
-            throw new Error('Invalid data');
-          }
-        });
-    }
-  
-    // Close Delete Confirmation Modal
-    closeDeleteConfirmModalButton.addEventListener('click', () => {
-      deleteConfirmModal.style.display = 'none';
-    });
-  
-    // Confirm Delete
+
+    closeDeleteConfirmModalButton.addEventListener('click', () => closeModal(deleteConfirmModal));
+    cancelDeleteButton.addEventListener('click', () => closeModal(deleteConfirmModal));
     confirmDeleteButton.addEventListener('click', () => {
-      if (noteToDelete) {
-        deleteNoteOnServer(noteToDelete.dataset.id)
-          .then(() => {
-            noteToDelete.remove();
-            deleteConfirmModal.style.display = 'none';
-          })
-          .catch((error) => console.error('Error deleting note:', error));
-      }
+        deleteNote(currentNoteId);
+        closeModal(deleteConfirmModal);
     });
-  
-    function deleteNoteOnServer(id) {
-      return fetch(`/notes/${id}`, {
-        method: 'DELETE',
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-        });
-    }
-  
-    // Cancel Delete
-    cancelDeleteButton.addEventListener('click', () => {
-      deleteConfirmModal.style.display = 'none';
-    });
-  
-    // Close modals when clicking outside of them
-    window.addEventListener('click', (event) => {
-      if (event.target === addNoteModal) {
-        addNoteModal.style.display = 'none';
-      } else if (event.target === updateNoteModal) {
-        updateNoteModal.style.display = 'none';
-      } else if (event.target === deleteConfirmModal) {
-        deleteConfirmModal.style.display = 'none';
-      }
-    });
+
+    // Initial render
+    renderNotes();
 });

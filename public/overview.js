@@ -1,33 +1,48 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const tasksCompletedElement = document.getElementById('tasks-completed');
-    const pendingTasksElement = document.getElementById('pending-tasks');
-    const upcomingEventsElement = document.getElementById('upcoming-tasks');
-    const taskSummaryList = document.getElementById('task-summary-list');
-
-    // Fetch task data from the server
-    fetch('/api/tasks') // Adjust the endpoint based on your server configuration
-        .then(response => response.json())
-        .then(data => {
-            const tasks = data.tasks;
-            
-            // Calculate tasks statistics
-            const tasksCompleted = tasks.filter(task => task.status === 'Complete').length;
-            const pendingTasks = tasks.filter(task => task.status === 'Pending').length;
-            const upcomingEvents = tasks.filter(task => new Date(task.dueDate) > new Date()).length;
-
-            // Update statistics
-            tasksCompletedElement.textContent = tasksCompleted;
-            pendingTasksElement.textContent = pendingTasks;
-            upcomingEventsElement.textContent = upcomingEvents;
-
-            // Generate task summary table
-            taskSummaryList.innerHTML = tasks.map(task => `
-                <tr>
-                    <td>${task.name}</td>
-                    <td>${task.status}</td>
-                    <td>${new Date(task.dueDate).toLocaleDateString()}</td>
-                </tr>
-            `).join('');
-        })
-        .catch(error => console.error('Error fetching tasks:', error));
+document.addEventListener('DOMContentLoaded', function() {
+    fetchTasksData();
 });
+
+function fetchTasksData() {
+    // In a real application, you would fetch this data from your server
+    // For this example, we'll use mock data
+    const tasksData = {
+        completed: 10,
+        pending: 5,
+        upcoming: 3
+    };
+
+    updateTasksOverview(tasksData);
+    fetchTasksSummary();
+}
+
+function updateTasksOverview(data) {
+    document.getElementById('tasks-completed').textContent = data.completed;
+    document.getElementById('pending-tasks').textContent = data.pending;
+    document.getElementById('upcoming-events').textContent = data.upcoming;
+}
+
+function fetchTasksSummary() {
+    // Again, in a real application, you would fetch this from your server
+    const tasksSummary = [
+        { task: "Complete project proposal", status: "In Progress", dueDate: "2024-08-01" },
+        { task: "Client meeting", status: "Scheduled", dueDate: "2024-07-30" },
+        { task: "Review code changes", status: "Pending", dueDate: "2024-07-28" }
+    ];
+
+    updateTasksSummary(tasksSummary);
+}
+
+function updateTasksSummary(summary) {
+    const taskSummaryList = document.getElementById('task-summary-list');
+    taskSummaryList.innerHTML = '';
+
+    summary.forEach(task => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${task.task}</td>
+            <td>${task.status}</td>
+            <td>${task.dueDate}</td>
+        `;
+        taskSummaryList.appendChild(row);
+    });
+}
