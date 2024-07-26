@@ -1,46 +1,132 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const sidebarToggleIcon = document.getElementById('sidebar-toggle-icon');
-    const todoSidebar = document.getElementById('todo-sidebar');
-    const addTodoButton = document.getElementById('add-todo-button');
-    const todoList = document.getElementById('todo-list');
-    const newTodoTitle = document.getElementById('new-todo-title');
-    const updateModal = document.getElementById('update-modal');
-    const updateTitleInput = document.getElementById('update-title-input');
-    const updateTodoButton = document.getElementById('update-todo-button');
-    const closeButton = document.querySelector('.close-button');
+document.addEventListener('DOMContentLoaded', () => {
+    const addTodoButton = document.getElementById('addTodoButton');
+    const todosContainer = document.getElementById('todosContainer');
+    const addTodoModal = document.getElementById('addTodoModal');
+    const updateTodoModal = document.getElementById('updateTodoModal');
     const modalOverlay = document.querySelector('.modal-overlay');
+    const todoTitle = document.getElementById('todoTitle');
+    const updateTodoTitle = document.getElementById('updateTodoTitle');
+    const saveUpdateButton = document.getElementById('saveUpdateButton');
+    const cancelAddTodoButton = document.getElementById('cancelAddTodoButton');
+    const closeAddTodoModalButton = document.getElementById('closeAddTodoModalButton');
+    const closeUpdateTodoModalButton = document.getElementById('closeUpdateTodoModalButton');
+    const cancelUpdateTodoButton = document.getElementById('cancelUpdateTodoButton');
+    const openAddTodoModalButton = document.getElementById('openAddTodoModalButton');
 
-    let currentTodoId = null;
+    let currentTodo = null;
 
-    // Fetch todos from the server
-    fetch('/todos')
+    // Load todos from the server
+    fetch('/todolists')
         .then(response => response.json())
         .then(todos => {
             todos.forEach(todo => addTodoToDOM(todo._id, todo.title));
         })
         .catch(error => console.error('Error loading todos:', error));
 
-    // Toggle sidebar
-    sidebarToggleIcon.addEventListener('click', () => {
-        todoSidebar.classList.toggle('open');
+    // Event listener to open the add todo modal
+    openAddTodoModalButton.addEventListener('click', () => {
+        currentTodo = null; // Ensure we're adding a new todo, not updating
+        clearForm();
+        openAddTodoModal();
     });
 
-    // Render todos in the DOM
-    function renderTodos(todos) {
-        todoList.innerHTML = '';
-        todos.forEach(todo => {
-            addTodoToDOM(todo._id, todo.title);
-        });
+    // Function to open the add todo modal
+    function openAddTodoModal() {
+        addTodoModal.style.display = 'block';
+        modalOverlay.style.display = 'block';
     }
 
-    // Add a new todo
-    function addTodoToServer(title) {
-        const newTodo = { title: title };
+    // Function to close the add todo modal
+    function closeAddTodoModal() {
+        addTodoModal.style.display = 'none';
+        modalOverlay.style.display = 'none';
+    }
 
-        fetch('/todos', {
+    // Function to open the update todo modal
+    function openUpdateTodoModal() {
+        updateTodoModal.style.display = 'block';
+        modalOverlay.style.display = 'block';
+    }
+
+    // Function to close the update todo modal
+    function closeUpdateTodoModal() {
+        updateTodoModal.style.display = 'none';
+        modalOverlay.style.display = 'none';
+    }
+
+    // Function to clear the form
+    function clearForm() {
+        todoTitle.value = '';
+        updateTodoTitle.value = '';
+    }
+
+    // Event listener to save or update a todo
+    addTodoButton.addEventListener('click', () => {
+        const newTodo = {
+            title: todoTitle.value
+        };
+
+        if (currentTodo) {
+            // Update existing todo
+            fetch(`/todolists/${currentTodo.dataset.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newTodo)
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateTodoInDOM(data);
+                closeAddTodoModal();
+            })
+            .catch(error => console.error('Error updating todo:', error));
+        } else {
+            // Add new todo
+            addTodoToServer(newTodo);
+            closeAddTodoModal();
+        }
+    });
+
+    // Save update button event listener
+    saveUpdateButton.addEventListener('click', () => {
+        const updatedTodo = {
+            title: updateTodoTitle.value
+        };
+
+        if (currentTodo) {
+            fetch(`/todolists/${currentTodo.dataset.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedTodo)
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateTodoInDOM(data);
+                closeUpdateTodoModal();
+            })
+            .catch(error => console.error('Error updating todo:', error));
+        }
+    });
+
+    // Event listeners to close modals
+    cancelAddTodoButton.addEventListener('click', closeAddTodoModal);
+    closeAddTodoModalButton.addEventListener('click', closeAddTodoModal);
+    closeUpdateTodoModalButton.addEventListener('click', closeUpdateTodoModal);
+    cancelUpdateTodoButton.addEventListener('click', closeUpdateTodoModal);
+
+    // Close modal when clicking outside
+    window.addEventListener('click', (event) => {
+        if (event.target === modalOverlay) {
+            closeAddTodoModal();
+            closeUpdateTodoModal();
+        }
+    });
+
+    // Function to add a todo to the server
+    function addTodoToServer(todo) {
+        fetch('/todolists', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newTodo)
+            body: JSON.stringify(todo)
         })
         .then(response => response.json())
         .then(data => {
@@ -49,23 +135,44 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => console.error('Error adding todo:', error));
     }
 
-    // Update a todo
-    function updateTodoInServer(id, title) {
-        fetch(`/todos/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title: title })
-        })
-        .then(response => response.json())
-        .then(data => {
-            updateTodoInDOM(data);
-        })
-        .catch(error => console.error('Error updating todo:', error));
+    // Function to update a todo in the DOM
+    function updateTodoInDOM(todo) {
+        const todoElement = document.querySelector(`li[data-id="${todo._id}"]`);
+        todoElement.querySelector('.todo-title').textContent = todo.title;
     }
 
-    // Delete a todo
+    // Function to add a todo to the DOM
+    function addTodoToDOM(id, title) {
+        const todoElement = document.createElement('li');
+        todoElement.dataset.id = id;
+
+        todoElement.innerHTML = `
+            <div class="todo">
+                <h3 class="todo-title">${title}</h3>
+                <button class="update-todo-button">Update</button>
+                <button class="delete-todo-button">Delete</button>
+            </div>
+        `;
+
+        todoElement.querySelector('.update-todo-button').addEventListener('click', () => {
+            currentTodo = todoElement;
+            updateTodoTitle.value = title;
+            openUpdateTodoModal();
+        });
+
+        todoElement.querySelector('.delete-todo-button').addEventListener('click', () => {
+            if (confirm('Are you sure you want to delete this todo?')) {
+                deleteTodoFromServer(id);
+                todoElement.remove();
+            }
+        });
+
+        todosContainer.appendChild(todoElement);
+    }
+
+    // Function to delete a todo from the server
     function deleteTodoFromServer(id) {
-        fetch(`/todos/${id}`, {
+        fetch(`/todolists/${id}`, {
             method: 'DELETE'
         })
         .then(response => {
@@ -73,72 +180,4 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => console.error('Error deleting todo:', error));
     }
-
-    // Function to add todo to the DOM
-    function addTodoToDOM(id, title) {
-        const li = document.createElement('li');
-        li.dataset.id = id;
-        li.innerHTML = `
-            <span>${title}</span>
-            <button class="edit-todo">Edit</button>
-            <button class="delete-todo">Delete</button>
-        `;
-        todoList.appendChild(li);
-    }
-
-    // Function to update todo in the DOM
-    function updateTodoInDOM(todo) {
-        const todoElement = document.querySelector(`li[data-id="${todo._id}"]`);
-        todoElement.querySelector('span').textContent = todo.title;
-    }
-
-    // Add todo event
-    addTodoButton.addEventListener('click', () => {
-        const title = newTodoTitle.value.trim();
-        if (title) {
-            addTodoToServer(title);
-            newTodoTitle.value = '';
-        }
-    });
-
-    // Edit and delete todo events
-    todoList.addEventListener('click', (e) => {
-        if (e.target.classList.contains('edit-todo')) {
-            currentTodoId = e.target.closest('li').dataset.id;
-            const todoTitle = e.target.previousElementSibling.textContent;
-            updateTitleInput.value = todoTitle;
-            updateModal.style.display = 'block';
-            modalOverlay.style.display = 'block';
-        } else if (e.target.classList.contains('delete-todo')) {
-            const id = e.target.closest('li').dataset.id;
-            if (confirm('Are you sure you want to delete this todo?')) {
-                deleteTodoFromServer(id);
-                e.target.closest('li').remove();
-            }
-        }
-    });
-
-    // Save updated todo
-    updateTodoButton.addEventListener('click', () => {
-        const newTitle = updateTitleInput.value.trim();
-        if (newTitle) {
-            updateTodoInServer(currentTodoId, newTitle);
-            updateModal.style.display = 'none';
-            modalOverlay.style.display = 'none';
-        }
-    });
-
-    // Close update modal
-    closeButton.addEventListener('click', () => {
-        updateModal.style.display = 'none';
-        modalOverlay.style.display = 'none';
-    });
-
-    // Close modal when clicking outside
-    window.addEventListener('click', (event) => {
-        if (event.target === modalOverlay) {
-            updateModal.style.display = 'none';
-            modalOverlay.style.display = 'none';
-        }
-    });
 });
