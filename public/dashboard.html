@@ -34,20 +34,27 @@
                     <i class="fas fa-notes"></i>
                     Notes
                 </li>
+                <li class="nav-item" data-page="todolist">
+                    <i class="fas fa-tasks"></i>
+                    To Do Lists
+                </li>
             </ul>
+            
             <div class="profile">
                 <img src="default-profile.png" alt="Profile Picture" id="profile-pic" class="profile-pic">
                 <div class="profile-info">
                     <span id="profile-name" class="profile-name">User Name</span>
                     <div class="dropdown">
-                        <button class="dropbtn">Profile Options</button>
+                        
                         <div class="dropdown-content">
                             <a href="#" id="edit-profile">Edit Profile</a>
+                            <button id="signOutBtn">Sign Out</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
         <!-- Edit Profile Modal -->
 <div id="editProfileModal" class="modal">
     <div class="modal-content">
@@ -243,7 +250,34 @@
                 <button id="cancelDeleteButton">No</button>
             </div>
         </div>
-        </div>            
+        </div> 
+
+        <!-- Todo Sidebar -->
+    <div id="todo-sidebar">
+        <h2>To-Do List</h2>
+        <ul id="todo-list">
+            <!-- Todo items will be dynamically added here -->
+        </ul>
+        <button id="add-todo-button">Add To-Do</button>
+    </div>
+
+    <!-- Add To-Do Modal -->
+    <div id="update-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Update To-Do</h2>
+            <input type="text" id="update-title-input" placeholder="New title">
+            <button id="update-todo-button">Save Changes</button>
+            <button class="close-button">Close</button>
+        </div>
+    </div>
+
+    <!-- Add To-Do Form -->
+    <div id="add-todo-form">
+        <input type="text" id="new-todo-title" placeholder="Enter new to-do title">
+        <button id="add-todo-button">Add To-Do</button>
+    </div>
+
+                   
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

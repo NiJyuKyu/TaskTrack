@@ -8,102 +8,137 @@ document.addEventListener('DOMContentLoaded', function() {
     const updateTitleInput = document.getElementById('update-title-input');
     const updateTodoButton = document.getElementById('update-todo-button');
     const closeButton = document.querySelector('.close-button');
-    const modalOverlay = document.getElementById('modal-overlay');
+    const modalOverlay = document.querySelector('.modal-overlay');
 
-    let todos = [];
     let currentTodoId = null;
 
-    // Toggle the sidebar visibility
+    // Fetch todos from the server
+    fetch('/todos')
+        .then(response => response.json())
+        .then(todos => {
+            todos.forEach(todo => addTodoToDOM(todo._id, todo.title));
+        })
+        .catch(error => console.error('Error loading todos:', error));
+
+    // Toggle sidebar
     sidebarToggleIcon.addEventListener('click', () => {
         todoSidebar.classList.toggle('open');
-        modalOverlay.classList.toggle('active');
     });
 
-    // Render To-Do items
-    function renderTodos() {
+    // Render todos in the DOM
+    function renderTodos(todos) {
         todoList.innerHTML = '';
         todos.forEach(todo => {
-            const li = document.createElement('li');
-            li.innerHTML = `
-                <span>${todo.title}</span>
-                <button class="edit-todo" data-id="${todo.id}">Edit</button>
-                <button class="delete-todo" data-id="${todo.id}">Delete</button>
-            `;
-            todoList.appendChild(li);
+            addTodoToDOM(todo._id, todo.title);
         });
     }
 
-    // Add a new To-Do
-    function addTodo(title) {
-        const newTodo = {
-            id: Date.now(),
-            title: title
-        };
-        todos.push(newTodo);
-        renderTodos();
+    // Add a new todo
+    function addTodoToServer(title) {
+        const newTodo = { title: title };
+
+        fetch('/todos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newTodo)
+        })
+        .then(response => response.json())
+        .then(data => {
+            addTodoToDOM(data._id, data.title);
+        })
+        .catch(error => console.error('Error adding todo:', error));
     }
 
-    // Update an existing To-Do
-    function updateTodo(id, title) {
-        const index = todos.findIndex(todo => todo.id === id);
-        if (index !== -1) {
-            todos[index].title = title;
-            renderTodos();
-        }
+    // Update a todo
+    function updateTodoInServer(id, title) {
+        fetch(`/todos/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: title })
+        })
+        .then(response => response.json())
+        .then(data => {
+            updateTodoInDOM(data);
+        })
+        .catch(error => console.error('Error updating todo:', error));
     }
 
-    // Delete a To-Do
-    function deleteTodo(id) {
-        todos = todos.filter(todo => todo.id !== id);
-        renderTodos();
+    // Delete a todo
+    function deleteTodoFromServer(id) {
+        fetch(`/todos/${id}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+        })
+        .catch(error => console.error('Error deleting todo:', error));
     }
 
-    // Add To-Do button click handler
+    // Function to add todo to the DOM
+    function addTodoToDOM(id, title) {
+        const li = document.createElement('li');
+        li.dataset.id = id;
+        li.innerHTML = `
+            <span>${title}</span>
+            <button class="edit-todo">Edit</button>
+            <button class="delete-todo">Delete</button>
+        `;
+        todoList.appendChild(li);
+    }
+
+    // Function to update todo in the DOM
+    function updateTodoInDOM(todo) {
+        const todoElement = document.querySelector(`li[data-id="${todo._id}"]`);
+        todoElement.querySelector('span').textContent = todo.title;
+    }
+
+    // Add todo event
     addTodoButton.addEventListener('click', () => {
         const title = newTodoTitle.value.trim();
         if (title) {
-            addTodo(title);
+            addTodoToServer(title);
             newTodoTitle.value = '';
         }
     });
 
-    // To-Do list click handler
+    // Edit and delete todo events
     todoList.addEventListener('click', (e) => {
         if (e.target.classList.contains('edit-todo')) {
-            currentTodoId = parseInt(e.target.getAttribute('data-id'));
-            const todo = todos.find(todo => todo.id === currentTodoId);
-            updateTitleInput.value = todo.title;
+            currentTodoId = e.target.closest('li').dataset.id;
+            const todoTitle = e.target.previousElementSibling.textContent;
+            updateTitleInput.value = todoTitle;
             updateModal.style.display = 'block';
-            modalOverlay.classList.add('active');
+            modalOverlay.style.display = 'block';
         } else if (e.target.classList.contains('delete-todo')) {
-            const id = parseInt(e.target.getAttribute('data-id'));
-            deleteTodo(id);
+            const id = e.target.closest('li').dataset.id;
+            if (confirm('Are you sure you want to delete this todo?')) {
+                deleteTodoFromServer(id);
+                e.target.closest('li').remove();
+            }
         }
     });
 
-    // Update To-Do button click handler
+    // Save updated todo
     updateTodoButton.addEventListener('click', () => {
         const newTitle = updateTitleInput.value.trim();
         if (newTitle) {
-            updateTodo(currentTodoId, newTitle);
+            updateTodoInServer(currentTodoId, newTitle);
             updateModal.style.display = 'none';
-            modalOverlay.classList.remove('active');
+            modalOverlay.style.display = 'none';
         }
     });
 
-    // Close modal button click handler
+    // Close update modal
     closeButton.addEventListener('click', () => {
         updateModal.style.display = 'none';
-        modalOverlay.classList.remove('active');
+        modalOverlay.style.display = 'none';
     });
 
-    // Close sidebar and modal when clicking outside of the sidebar or modal
-    modalOverlay.addEventListener('click', () => {
-        todoSidebar.classList.remove('open');
-        modalOverlay.classList.remove('active');
-        updateModal.style.display = 'none';
+    // Close modal when clicking outside
+    window.addEventListener('click', (event) => {
+        if (event.target === modalOverlay) {
+            updateModal.style.display = 'none';
+            modalOverlay.style.display = 'none';
+        }
     });
-
-    // Initial render
-    renderTodos();
 });

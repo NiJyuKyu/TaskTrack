@@ -1,182 +1,53 @@
-/* General styles */
-body {
+/* Styles for the Overview page */
+#overview-page {
+    padding: 20px;
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-}
-
-.container {
-    display: flex;
-    height: 100vh;
-}
-
-.sidebar-left {
-    width: 250px;
-    background-color: #2c3e50;
-    color: #10b9e4;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-}
-
-.logo {
-    font-size: 24px;
-    margin-bottom: 20px;
-}
-
-.nav {
-    list-style: none;
-    padding: 0;
-}
-
-.nav-item {
-    padding: 10px 0;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-}
-
-.nav-item i {
-    margin-right: 10px;
-}
-
-.nav-item.active {
-    background-color: #34495e;
-    border-radius: 5px;
-}
-
-.sidebar-notes {
-    margin-top: auto;
-    margin-bottom: 20px;
-}
-
-.profile {
-    display: flex;
-    align-items: center;
-}
-
-.profile-pic {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    margin-right: 10px;
-}
-
-.profile-info {
-    flex: 1;
-}
-
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.dropbtn {
-    background-color: #34495e;
-    color: rgb(188, 50, 50);
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #ecf0f1;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-}
-
-.dropdown-content a {
-    color: #2c3e50;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-}
-
-.dropdown-content a:hover {
-    background-color: #bdc3c7;
-}
-
-.dropdown:hover .dropdown-content {
-    display: block;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0,0.4);
-    padding-top: 60px;
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-}
-
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.btn-save {
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.btn-save:hover {
-    background-color: #45a049;
-}
-
-.main-content {
-    flex: 1;
-    padding: 20px;
 }
 
 .dashboard {
     display: flex;
     flex-direction: column;
+    gap: 20px;
 }
 
 .stats {
     display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
+    justify-content: space-between;
 }
 
 .stat-card {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 20px;
-    width: 30%;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    padding: 15px;
     text-align: center;
+    flex: 1;
+    margin: 0 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card h2 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.stat-card p {
+    font-size: 24px;
+    margin: 10px 0 0;
+    color: #555;
+}
+
+.task-summary {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.task-summary h2 {
+    margin: 0 0 15px;
+    font-size: 22px;
+    color: #333;
 }
 
 .task-summary table {
@@ -184,15 +55,23 @@ body {
     border-collapse: collapse;
 }
 
-.task-summary table, th, td {
-    border: 1px solid #ddd;
-}
-
-.task-summary th, td {
-    padding: 8px;
+.task-summary th,
+.task-summary td {
+    padding: 10px;
     text-align: left;
+    border-bottom: 1px solid #ddd;
 }
 
-.task-summary tr:nth-child(even) {
-    background-color: #f2f2f2;
+.task-summary th {
+    background-color: #f4f4f4;
+    color: #333;
+    font-weight: bold;
+}
+
+.task-summary td {
+    color: #555;
+}
+
+.task-summary tr:hover {
+    background-color: #f9f9f9;
 }
