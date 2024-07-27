@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalOverlay = document.querySelector('.modal-overlay');
     const todoTitle = document.getElementById('todoTitle');
     const updateTodoTitle = document.getElementById('updateTodoTitle');
-    const saveUpdateButton = document.getElementById('saveUpdateButton');
+    const saveUpdateTodoButton = document.getElementById('saveUpdateTodoButton');
     const cancelAddTodoButton = document.getElementById('cancelAddTodoButton');
     const closeAddTodoModalButton = document.getElementById('closeAddTodoModalButton');
     const closeUpdateTodoModalButton = document.getElementById('closeUpdateTodoModalButton');
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Save update button event listener
-    saveUpdateButton.addEventListener('click', () => {
+    saveUpdateTodoButton.addEventListener('click', () => {
         const updatedTodo = {
             title: updateTodoTitle.value
         };

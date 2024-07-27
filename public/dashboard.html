@@ -242,43 +242,38 @@
 
         <!-- To-Do List Page -->
         <div class="todolist" id="todolist-page" style="display: none;">
-            <div class="sidebar-header">
-                <h1>To-Do List</h1>
-                <input type="text" id="new-todo-title" placeholder="New to-do title">
-                <button id="add-todo-button">Add To-Do</button>
-                <ul id="todo-list">
-                    <!-- To-Dos will be dynamically added here -->
-                </ul>
-            </div>
-        <!-- Add To-Do Modal -->
+        <div class="container">
+            <h1>To-Do List</h1>
+            <button id="openAddTodoModalButton">Add New To-Do</button>
+              <ul id="todosContainer" class="todo-list">
+                <!-- To-dos will be dynamically added here -->
+            </ul>
+    
+        <!-- Add Todo Modal -->
         <div id="addTodoModal" class="modal">
             <div class="modal-content">
                 <span id="closeAddTodoModalButton" class="close">&times;</span>
-                <h2>Add To-Do</h2>
-                <label for="todoTitle">Title:</label>
-                <input type="text" id="todoTitle" placeholder="To-Do title" required>
-                <button id="addTodoButton">Save</button>
+                <h2>Add New To-Do</h2>
+                <input type="text" id="todoTitle" placeholder="Enter title">
+                <button id="addTodoButton">Add Todo</button>
                 <button id="cancelAddTodoButton">Cancel</button>
             </div>
         </div>
-
-        <!-- Update To-Do Modal -->
-    <div id="updateTodoModal" class="modal">
-        <div class="modal-content">
-            <span id="closeUpdateTodoModalButton" class="close">&times;</span>
-            <h2>Update To-Do</h2>
-            <label for="updateTodoTitle">Title:</label>
-            <input type="text" id="updateTodoTitle" placeholder="Update title" required>
-            <button id="saveUpdateButton">Save</button>
-            <button id="cancelUpdateTodoButton">Cancel</button>
+    
+        <!-- Update Todo Modal -->
+        <div id="updateTodoModal" class="modal">
+            <div class="modal-content">
+                <span id="closeUpdateTodoModalButton" class="close">&times;</span>
+                <h2>Update To-Do</h2>
+                <input type="text" id="updateTodoTitle" placeholder="Update title">
+                <button id="saveUpdateTodoButton">Save</button>
+                <button id="cancelUpdateTodoButton">Cancel</button>
+            </div>
         </div>
-    </div>
-
-    <!-- Modal Overlay -->
-        <div class="modal-overlay"></div>
-</div>
-
-    </div>
+    
+        <!-- Modal Overlay -->
+       </div>
+    </div> 
                    
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
