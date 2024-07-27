@@ -204,13 +204,13 @@ button:hover {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-/* Note & To-Do List */
-.notes-container, .todo-list {
+/* Notes */
+.notes-container {
     list-style: none;
     padding: 0;
 }
 
-.notes-container li, .todo-list li {
+.notes-container li {
     background: #fff;
     padding: 10px;
     border-radius: 5px;
@@ -218,7 +218,7 @@ button:hover {
     position: relative;
 }
 
-.notes-container li button, .todo-list li button {
+.notes-container li button {
     background: #3498db;
     color: #fff;
     border: none;
@@ -228,9 +228,38 @@ button:hover {
     margin-left: 10px;
 }
 
-.notes-container li button:hover, .todo-list li button:hover {
+.notes-container li button:hover {
     background: #2980b9;
 }
+
+/* To-Do List */
+.todo-list {
+    list-style: none;
+    padding: 0;
+}
+
+.todo-list li {
+    background: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.todo-list li button {
+    background: #3498db;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.todo-list li button:hover {
+    background: #2980b9;
+}
+
 
 /* Form Styles */
 .form-group {

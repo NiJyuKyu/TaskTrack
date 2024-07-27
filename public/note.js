@@ -3,12 +3,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const notesContainer = document.getElementById('notesContainer');
     const addNoteModal = document.getElementById('addNoteModal');
     const updateNoteModal = document.getElementById('updateNoteModal');
-    const modalOverlay = document.querySelector('.modal-overlay');
+    const modalOverlay = document.getElementById('modal-overlay');
     const noteTitle = document.getElementById('noteTitle');
     const noteContent = document.getElementById('noteContent');
     const updateNoteTitle = document.getElementById('updateNoteTitle');
     const updateNoteContent = document.getElementById('updateNoteContent');
-    const saveUpdateButton = document.getElementById('saveUpdateButton');
+    const saveUpdateNoteButton = document.getElementById('saveUpdateNoteButton');
     const cancelAddNoteButton = document.getElementById('cancelAddNoteButton');
     const closeAddNoteModalButton = document.getElementById('closeAddNoteModalButton');
     const closeUpdateNoteModalButton = document.getElementById('closeUpdateNoteModalButton');
@@ -90,43 +90,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Update the save button event listener
-    saveUpdateButton.addEventListener('click', () => {
-    const updatedNote = {
-        title: updateNoteTitle.value,
-        content: updateNoteContent.value
-    };
+    // Event listener to save updates to a note
+    saveUpdateNoteButton.addEventListener('click', () => {
+        const updatedNote = {
+            title: updateNoteTitle.value,
+            content: updateNoteContent.value
+        };
 
-    if (currentNote) {
-        fetch(`/notes/${currentNote.dataset.id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updatedNote)
-        })
-        .then(response => response.json())
-        .then(data => {
-            updateNoteInDOM(data);
-            closeUpdateNoteModal();
-        })
-        .catch(error => console.error('Error updating note:', error));
-    }
-});
+        if (currentNote) {
+            fetch(`/notes/${currentNote.dataset.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedNote)
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateNoteInDOM(data);
+                closeUpdateNoteModal();
+            })
+            .catch(error => console.error('Error updating note:', error));
+        }
+    });
 
     // Event listener to cancel the add note
     cancelAddNoteButton.addEventListener('click', closeAddNoteModal);
     closeAddNoteModalButton.addEventListener('click', closeAddNoteModal);
     closeUpdateNoteModalButton.addEventListener('click', closeUpdateNoteModal);
     cancelUpdateNoteButton.addEventListener('click', closeUpdateNoteModal);
-
-    // Ensure these event listeners are correctly set up
-    closeUpdateNoteModalButton.addEventListener('click', closeUpdateNoteModal);
-    cancelUpdateNoteButton.addEventListener('click', closeUpdateNoteModal);
-
-    // Make sure the closeUpdateNoteModal function is defined correctly
-    function closeUpdateNoteModal() {
-    updateNoteModal.style.display = 'none';
-    modalOverlay.style.display = 'none';
-}   
 
     // Event listener to close modal when clicking outside
     window.addEventListener('click', (event) => {
