@@ -1,77 +1,118 @@
-/* Styles for the Overview page */
-#overview-page {
-    padding: 20px;
-    font-family: Arial, sans-serif;
-}
-
-.dashboard {
+/* Overview Container */
+.overview {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    align-items: center;
+    margin: 20px;
 }
 
+/* Main Content */
+.main-content {
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin: 0 auto;
+}
+
+/* Heading */
+.main-content h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+}
+
+/* Dashboard Stats */
 .stats {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
 }
 
 .stat-card {
-    background-color: #f4f4f4;
+    background-color: #ffffff;
     border-radius: 8px;
-    padding: 15px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 30%;
     text-align: center;
-    flex: 1;
-    margin: 0 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 10px 0;
 }
 
 .stat-card h2 {
-    margin: 0;
-    font-size: 18px;
-    color: #333;
-}
-
-.stat-card p {
-    font-size: 24px;
-    margin: 10px 0 0;
+    font-size: 1.2em;
+    margin-bottom: 10px;
     color: #555;
 }
 
+.stat-card p {
+    font-size: 1.5em;
+    color: #2196F3;
+}
+
+/* Task Summary */
 .task-summary {
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    width: 100%;
 }
 
 .task-summary h2 {
-    margin: 0 0 15px;
-    font-size: 22px;
+    font-size: 1.5em;
+    margin-bottom: 15px;
     color: #333;
 }
 
 .task-summary table {
     width: 100%;
     border-collapse: collapse;
+    margin: 0 auto;
 }
 
-.task-summary th,
-.task-summary td {
-    padding: 10px;
+.task-summary table th, .task-summary table td {
+    border: 1px solid #ddd;
+    padding: 12px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
 }
 
-.task-summary th {
-    background-color: #f4f4f4;
-    color: #333;
-    font-weight: bold;
-}
-
-.task-summary td {
+.task-summary table th {
+    background-color: #f2f2f2;
     color: #555;
 }
 
-.task-summary tr:hover {
-    background-color: #f9f9f9;
+/* Recent Task */
+.recent-task {
+    margin-top: 40px;
+    width: 100%;
+}
+
+.recent-task h2 {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    color: #333;
+    text-align: center;
+}
+
+#recent-task-content {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: left;
+    margin: 0 auto;
+    width: 80%;
+}
+
+#recent-task-content h3 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+#recent-task-content p {
+    font-size: 1em;
+    color: #777;
 }
