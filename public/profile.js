@@ -1,4 +1,12 @@
 document.addEventListener("DOMContentLoaded", function() {
+    const userId = localStorage.getItem('userId');
+    
+    // Check if userId exists
+    if (!userId) {
+        console.error('User ID not found in localStorage');
+        return;
+    }
+
     const editProfileBtn = document.getElementById('edit-profile-btn');
     const editProfilePopup = document.getElementById('edit-profile-popup');
     const closeBtn = editProfilePopup.querySelector('.close');
@@ -12,14 +20,19 @@ document.addEventListener("DOMContentLoaded", function() {
     fetch(`/users/${userId}`, {
         method: 'GET',
         headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}` // If you use JWT
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
     .then(user => {
         if (user) {
             usernameDisplay.textContent = user.username;
-            profilePicture.src = user.avatar || '/images/default-avatar.png';
+            profilePicture.src = user.avatar || 'default-avatar.png';
             newUsernameInput.value = user.username; // Pre-fill the username input
         }
     })
@@ -55,15 +68,20 @@ document.addEventListener("DOMContentLoaded", function() {
         fetch(`/users/${userId}`, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${localStorage.getItem('token')}` // If you use JWT
             },
             body: formData
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(user => {
             if (user) {
                 usernameDisplay.textContent = user.username;
-                profilePicture.src = user.avatar || '/images/default-avatar.png';
+                profilePicture.src = user.avatar || 'default-avatar.png';
                 editProfilePopup.style.display = 'none';
             }
         })

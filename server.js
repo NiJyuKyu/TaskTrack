@@ -29,15 +29,13 @@ app.use(express.static('public'));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/images', express.static(path.join(__dirname, 'public/images')));
 
-
 // User Schema and Model
 const userSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    name: { type: String },
     profilePicture: { type: String },
-    avatar: String
+    avatar: { type: String }
 });
 
 const User = mongoose.model('User', userSchema);
@@ -48,7 +46,6 @@ const EventSchema = new mongoose.Schema({
 });
 
 const Event = mongoose.model('Event', EventSchema);
-
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -62,16 +59,47 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+// Middleware to verify JWT token
+function verifyToken(req, res, next) {
+    const token = req.headers['authorization']?.split(' ')[1];
+
+    if (!token) return res.status(403).json({ message: 'No token provided' });
+
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+        if (err) return res.status(401).json({ message: 'Failed to authenticate token' });
+
+        req.userId = decoded.id;
+        next();
+    });
+}
+
+// Helper functions
+async function createUser(username, email, password) {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new User({ username, email, password: hashedPassword });
+    return user.save();
+}
+
+async function authenticateUser(username, password) {
+    const user = await User.findOne({ username });
+    if (user && await bcrypt.compare(password, user.password)) {
+        return user;
+    }
+    return null;
+}
+
+function generateToken(userId) {
+    return jwt.sign({ id: userId }, JWT_SECRET, { expiresIn: '1h' });
+}
+
 // Signup route
 app.post('/signup', async (req, res) => {
     const { username, email, password } = req.body;
     try {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ username, email, password: hashedPassword });
-        await newUser.save();
-        res.status(201).json({ message: 'User created, please log in' });
-    } catch (err) {
-        res.status(400).json({ error: err.message });
+        const user = await createUser(username, email, password);
+        res.status(201).json({ userId: user._id });
+    } catch (error) {
+        res.status(400).json({ error: 'Signup failed' });
     }
 });
 
@@ -79,16 +107,14 @@ app.post('/signup', async (req, res) => {
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
     try {
-        const user = await User.findOne({ username });
-        if (!user) return res.status(404).json({ message: 'User not found' });
-
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
-
-        const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
-        res.status(200).json({ message: 'Logged in successfully', token });
+        const user = await authenticateUser(username, password);
+        if (user) {
+            const token = generateToken(user._id);
+            res.status(200).json({ userId: user._id, token });
+        } else {
+            res.status(401).json({ message: 'Login failed' });
+        }
     } catch (error) {
-        console.error('Login Error:', error);
         res.status(500).json({ message: 'Server error' });
     }
 });
@@ -142,9 +168,12 @@ app.post('/update-profile', verifyToken, upload.single('avatar'), async (req, re
 app.get('/users/:id', async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
-        res.json(user);
-    } catch (err) {
-        res.status(500).send(err);
+        if (!user) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+        res.send(user);
+    } catch (error) {
+        res.status(500).send({ message: 'Server error' });
     }
 });
 
@@ -168,59 +197,45 @@ app.post('/api/logout', (req, res) => {
     res.json({ success: true, message: 'Logged out successfully' });
 });
 
-// Middleware to verify JWT token
-function verifyToken(req, res, next) {
-    const token = req.headers['authorization']?.split(' ')[1];
-
-    if (!token) return res.status(403).json({ message: 'No token provided' });
-
-    jwt.verify(token, JWT_SECRET, (err, decoded) => {
-        if (err) return res.status(401).json({ message: 'Failed to authenticate token' });
-
-        req.userId = decoded.id;
-        next();
-    });
-}
-
-// Calendar
+// Calendar routes
 // Create
-app.post('/', async (req, res) => {
+app.post('/events', async (req, res) => {
     try {
-      const event = new Event(req.body);
-      await event.save();
-      res.status(201).json(event);
+        const event = new Event(req.body);
+        await event.save();
+        res.status(201).json(event);
     } catch (error) {
-      res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
     }
 });
 
 // Read
-app.get('/', async (req, res) => {
+app.get('/events', async (req, res) => {
     try {
-      const events = await Event.find();
-      res.json(events);
+        const events = await Event.find();
+        res.json(events);
     } catch (error) {
-      res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 
 // Update
-app.put('/:id', async (req, res) => {
+app.put('/events/:id', async (req, res) => {
     try {
-      const event = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
-      res.json(event);
+        const event = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json(event);
     } catch (error) {
-      res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
     }
 });
 
 // Delete
-app.delete('/:id', async (req, res) => {
+app.delete('/events/:id', async (req, res) => {
     try {
-      await Event.findByIdAndDelete(req.params.id);
-      res.status(204).end();
+        await Event.findByIdAndDelete(req.params.id);
+        res.status(204).end();
     } catch (error) {
-      res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
     }
 });
 
