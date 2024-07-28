@@ -31,55 +31,7 @@ pageContainers.forEach(container => {
   }
 });
 
-//calendar page
-document.addEventListener('DOMContentLoaded', function() {
-    const navItems = document.querySelectorAll('.nav-item');
-    const pages = document.querySelectorAll('.main-content > div');
-    
-    navItems.forEach(item => {
-      item.addEventListener('click', function() {
-        navItems.forEach(nav => nav.classList.remove('active'));
-        item.classList.add('active');
   
-        const page = item.getAttribute('data-page');
-        pages.forEach(page => page.style.display = 'none');
-        document.getElementById(`${page}-page`).style.display = 'block';
-  
-        // Initialize FullCalendar on the calendar page
-        if (page === 'calendar') {
-          initCalendar();
-        }
-      });
-    });
-  
-    function initCalendar() {
-      const calendarEl = document.getElementById('calendar');
-  
-      const calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth', // Display the calendar in month view initially
-        headerToolbar: {
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay'
-        },
-        events: [ // Example events, replace with your own data
-          {
-            title: 'Meeting',
-            start: '2024-07-05T10:00:00',
-            end: '2024-07-05T12:00:00'
-          },
-          {
-            title: 'Event',
-            start: '2024-07-15',
-            end: '2024-07-17'
-          }
-          // Add more events as needed
-        ]
-      });
-  
-      calendar.render(); // Render the calendar
-    }
-});  
 
 document.addEventListener('DOMContentLoaded', function() {
   // Set user profile
@@ -122,14 +74,6 @@ document.addEventListener('DOMContentLoaded', function() {
           this.classList.add('active');
       });
   });
-
-  // Initialize calendar
-  const calendarEl = document.getElementById('calendar');
-  const calendar = new FullCalendar.Calendar(calendarEl, {
-      initialView: 'dayGridMonth',
-      // Add more calendar options as needed
-  });
-  calendar.render();
 
   // Handle add task button
   const addTaskBtn = document.getElementById('add-task-btn');
@@ -189,14 +133,6 @@ navItems.forEach(item => {
   });
 });
 
-// Initially show the overview page
-pageContainers.forEach(container => {
-  if (container.id === 'overview-page') {
-    container.style.display = 'block';
-  } else {
-    container.style.display = 'none';
-  }
-});
 
 // User authentication
 let currentUser = null;
