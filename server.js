@@ -36,6 +36,13 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
+const EventSchema = new mongoose.Schema({
+    title: String,
+    date: Date
+  });
+  
+  const Event = mongoose.model('Event', EventSchema);
+
 // Signup route
 app.post('/signup', async (req, res) => {
     const { username, email, password } = req.body;
@@ -99,6 +106,49 @@ function verifyToken(req, res, next) {
         next();
     });
 }
+
+//Calendar
+// Create
+app.post('/', async (req, res) => {
+    try {
+      const event = new Event(req.body);
+      await event.save();
+      res.status(201).json(event);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+  
+  // Read
+  app.get('/', async (req, res) => {
+    try {
+      const events = await Event.find();
+      res.json(events);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+  
+  // Update
+  app.put('/:id', async (req, res) => {
+    try {
+      const event = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
+      res.json(event);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+  
+  // Delete
+  app.delete('/:id', async (req, res) => {
+    try {
+      await Event.findByIdAndDelete(req.params.id);
+      res.status(204).end();
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
 
 // Routes
 app.use('/tasks', tasksRoutes);
