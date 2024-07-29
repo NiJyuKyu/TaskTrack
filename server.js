@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const path = require('path');
 const tasksRoutes = require('./routes/tasksRoutes');
 const noteRoutes = require('./routes/noteRoutes');
 const toDoListRoutes = require('./routes/toDoListRoutes');
@@ -24,6 +26,9 @@ mongoose.connect(MONGODB_URI, {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
+
 
 // User Schema and Model
 const userSchema = new mongoose.Schema({
@@ -31,7 +36,8 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     name: { type: String },
-    profilePicture: { type: String }
+    profilePicture: { type: String },
+    avatar: String
 });
 
 const User = mongoose.model('User', userSchema);
@@ -39,9 +45,22 @@ const User = mongoose.model('User', userSchema);
 const EventSchema = new mongoose.Schema({
     title: String,
     date: Date
-  });
-  
-  const Event = mongoose.model('Event', EventSchema);
+});
+
+const Event = mongoose.model('Event', EventSchema);
+
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname))
+    }
+});
+
+const upload = multer({ storage: storage });
 
 // Signup route
 app.post('/signup', async (req, res) => {
@@ -85,13 +104,69 @@ app.get('/api/check-auth', verifyToken, async (req, res) => {
     }
 });
 
-// Middleware to handle session or authentication
-const session = require('express-session');
-app.use(session({
-    secret: 'your-secret-key',
-    resave: false,
-    saveUninitialized: true
-}));
+// Get user profile
+app.get('/user-profile', verifyToken, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId).select('-password');
+        if (!user) return res.status(404).json({ message: 'User not found' });
+        res.json({ username: user.username, avatarUrl: user.profilePicture });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Update user profile
+app.post('/update-profile', verifyToken, upload.single('avatar'), async (req, res) => {
+    try {
+        const { username } = req.body;
+        const updateData = { username };
+        
+        if (req.file) {
+            updateData.profilePicture = `/uploads/${req.file.filename}`;
+        }
+
+        const user = await User.findByIdAndUpdate(req.userId, updateData, { new: true }).select('-password');
+        
+        if (!user) return res.status(404).json({ message: 'User not found' });
+        
+        res.json({ 
+            success: true, 
+            username: user.username, 
+            avatarUrl: user.profilePicture 
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+});
+
+app.get('/users/:id', async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        res.json(user);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+app.post('/users/:id', upload.single('avatar'), async (req, res) => {
+    try {
+        const updatedData = { username: req.body.username };
+        if (req.file) {
+            updatedData.avatar = `/uploads/${req.file.filename}`;
+        }
+        const user = await User.findByIdAndUpdate(req.params.id, updatedData, { new: true });
+        res.json(user);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+// Logout route
+app.post('/api/logout', (req, res) => {
+    // In a stateless JWT setup, you typically don't need server-side logout
+    // The client should discard the token
+    res.json({ success: true, message: 'Logged out successfully' });
+});
 
 // Middleware to verify JWT token
 function verifyToken(req, res, next) {
@@ -107,7 +182,7 @@ function verifyToken(req, res, next) {
     });
 }
 
-//Calendar
+// Calendar
 // Create
 app.post('/', async (req, res) => {
     try {
@@ -117,38 +192,37 @@ app.post('/', async (req, res) => {
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
-  });
-  
-  // Read
-  app.get('/', async (req, res) => {
+});
+
+// Read
+app.get('/', async (req, res) => {
     try {
       const events = await Event.find();
       res.json(events);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
-  });
-  
-  // Update
-  app.put('/:id', async (req, res) => {
+});
+
+// Update
+app.put('/:id', async (req, res) => {
     try {
       const event = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
       res.json(event);
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
-  });
-  
-  // Delete
-  app.delete('/:id', async (req, res) => {
+});
+
+// Delete
+app.delete('/:id', async (req, res) => {
     try {
       await Event.findByIdAndDelete(req.params.id);
       res.status(204).end();
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
-  });
-
+});
 
 // Routes
 app.use('/tasks', tasksRoutes);
