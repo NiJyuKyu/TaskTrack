@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     fetchTasksData();
+    fetchCalendarEvents();
 
     function fetchTasksData() {
         fetch('/tasks') // Adjust the endpoint as per your server setup
@@ -12,14 +13,21 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => console.error('Error fetching tasks data:', error));
     }
 
+    function fetchCalendarEvents() {
+        fetch('/events') // Adjust the endpoint for calendar events
+            .then(response => response.json())
+            .then(data => { 
+                updateUpcomingEvents(data);
+            })
+            .catch(error => console.error('Error fetching calendar events:', error));
+    }
+
     function updateStats(data) {
         const completedTasks = data.filter(task => task.status === 'Completed').length;
-        const pendingTasks = data.filter(task => task.status === 'To-Do').length;
-        const upcomingEvents = data.filter(task => new Date(task.dueDate) > new Date()).length;
-
+        const pendingTasks = data.filter(task => task.status === 'Incomplete' || task.status === 'Ongoing').length;
+        
         document.getElementById('tasks-completed').textContent = completedTasks;
         document.getElementById('pending-tasks').textContent = pendingTasks;
-        document.getElementById('upcoming-events').textContent = upcomingEvents;
     }
 
     function populateTaskSummary(data) {
@@ -46,10 +54,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h3>${recentTask.name}</h3>
                 <p>Status: ${recentTask.status}</p>
                 <p>Due Date: ${new Date(recentTask.dueDate).toLocaleDateString()}</p>
-                <p>Description: ${recentTask.description}</p>
             `;
         } else {
             recentTaskContent.innerHTML = '<p>No recent tasks found.</p>';
         }
+    }
+
+    function updateUpcomingEvents(events) {
+        const upcomingEventsElement = document.getElementById('upcoming-events');
+        const upcomingEventsList = document.getElementById('upcoming-events-list');
+        upcomingEventsList.innerHTML = '';
+
+        const upcomingEvents = events.filter(event => new Date(event.date) > new Date());
+
+        upcomingEvents.forEach(event => {
+            const eventItem = document.createElement('li');
+            eventItem.textContent = `${event.title} - ${new Date(event.date).toLocaleDateString()}`;
+            upcomingEventsList.appendChild(eventItem);
+        });
+
+        upcomingEventsElement.textContent = `${upcomingEvents.length} upcoming events`;
     }
 });

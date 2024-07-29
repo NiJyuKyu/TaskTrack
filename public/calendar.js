@@ -3,15 +3,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const monthYear = document.getElementById('month-year');
     const prevMonthBtn = document.getElementById('prev-month');
     const nextMonthBtn = document.getElementById('next-month');
-    const eventForm = document.getElementById('eventForm');
-    const eventsList = document.getElementById('events');
+    const addEventBtn = document.getElementById('add-event-btn');
     const eventPopup = document.getElementById('event-popup');
     const addEventPopup = document.getElementById('add-event-popup');
+    const closePopups = document.querySelectorAll('.close');
+    const eventForm = document.getElementById('eventForm');
+    const eventsList = document.getElementById('events');
+    const saveEventButton = document.getElementById('save-event-btn');
     const popupDate = document.getElementById('popup-date');
     const popupEvents = document.getElementById('popup-events');
-    const closePopups = document.querySelectorAll('.close');
-    const addEventBtn = document.getElementById('add-event-btn');
-    const saveEventButton = document.getElementById('save-event-btn');
 
     let currentDate = new Date();
     let events = {};
@@ -26,14 +26,53 @@ document.addEventListener('DOMContentLoaded', function() {
                     acc[date].push(event);
                     return acc;
                 }, {});
-                generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
+                generateCalendar(currentDate);
                 updateEventsList();
             })
             .catch(error => console.error('Error:', error));
     }
 
-    function generateCalendar(year, month) {
-        // Your existing generateCalendar function here
+    function generateCalendar(date) {
+        const year = date.getFullYear();
+        const month = date.getMonth();
+
+        monthYear.textContent = `${date.toLocaleString('default', { month: 'long' })} ${year}`;
+
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+
+        calendarBody.innerHTML = '';
+
+        let dayCounter = 1;
+        for (let i = 0; i < 6; i++) {
+            const row = document.createElement('tr');
+            for (let j = 0; j < 7; j++) {
+                if (i === 0 && j < firstDay.getDay()) {
+                    row.appendChild(document.createElement('td'));
+                } else if (dayCounter > lastDay.getDate()) {
+                    break;
+                } else {
+                    const cell = document.createElement('td');
+                    cell.textContent = dayCounter;
+                    if (dayCounter === currentDate.getDate() && month === currentDate.getMonth() && year === currentDate.getFullYear()) {
+                        cell.classList.add('current-day');
+                    }
+                    const eventDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(dayCounter).padStart(2, '0')}`;
+                    const dayEvents = events[eventDate] || [];
+                    if (dayEvents.length > 0) {
+                        cell.classList.add('has-event');
+                        const eventDiv = document.createElement('div');
+                        eventDiv.classList.add('event-title');
+                        eventDiv.textContent = dayEvents[0].title;
+                        cell.appendChild(eventDiv);
+                        cell.addEventListener('click', () => showEventPopup(eventDate));
+                    }
+                    row.appendChild(cell);
+                    dayCounter++;
+                }
+            }
+            calendarBody.appendChild(row);
+        }
     }
 
     function updateEventsList() {
@@ -42,6 +81,19 @@ document.addEventListener('DOMContentLoaded', function() {
             events[date].forEach(event => {
                 const li = document.createElement('li');
                 li.textContent = `${date}: ${event.title}`;
+                
+                // Create edit and delete buttons dynamically
+                const editBtn = document.createElement('button');
+                editBtn.textContent = 'Edit';
+                editBtn.onclick = () => editEvent(date, event._id);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.onclick = () => deleteEvent(date, event._id);
+
+                li.appendChild(editBtn);
+                li.appendChild(deleteBtn);
+                
                 eventsList.appendChild(li);
             });
         }
@@ -67,11 +119,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function editEvent(date, eventId) {
-        // Populate form with event details
         const event = events[date].find(e => e._id === eventId);
-        document.getElementById('eventTitle').value = event.title;
-        document.getElementById('eventDate').value = date;
-        document.getElementById('eventId').value = eventId;
+        document.getElementById('event-title').value = event.title;
+        document.getElementById('event-date').value = date;
+        document.getElementById('event-id').value = eventId;
         addEventPopup.style.display = 'block';
     }
 
@@ -81,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => response.json())
                 .then(data => {
                     events[date] = events[date].filter(e => e._id !== eventId);
-                    generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
+                    generateCalendar(currentDate);
                     updateEventsList();
                     eventPopup.style.display = 'none';
                 })
@@ -104,16 +155,30 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     addEventBtn.onclick = function() {
-        document.getElementById('eventId').value = '';
-        eventForm.reset();
-        addEventPopup.style.display = 'block';
+        const eventIdInput = document.getElementById('event-id');
+        const eventTitleInput = document.getElementById('event-title');
+        const eventDateInput = document.getElementById('event-date');
+    
+        // Debugging: Check if elements are null
+        console.log('Event ID Input:', eventIdInput);
+        console.log('Event Title Input:', eventTitleInput);
+        console.log('Event Date Input:', eventDateInput);
+    
+        if (eventIdInput && eventTitleInput && eventDateInput) {
+            eventIdInput.value = '';
+            eventForm.reset();
+            addEventPopup.style.display = 'block';
+        } else {
+            console.error('One or more elements are missing');
+        }
     }
+    
 
     saveEventButton.onclick = function(e) {
         e.preventDefault();
-        const title = document.getElementById('eventTitle').value;
-        const date = document.getElementById('eventDate').value;
-        const eventId = document.getElementById('eventId').value;
+        const title = document.getElementById('event-title').value;
+        const date = document.getElementById('event-date').value;
+        const eventId = document.getElementById('event-id').value;
 
         const method = eventId ? 'PUT' : 'POST';
         const url = eventId ? `/events/${eventId}` : '/events';
@@ -133,16 +198,15 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => console.error('Error:', error));
     };
 
-    generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
     fetchEvents();
 
     prevMonthBtn.addEventListener('click', function() {
         currentDate.setMonth(currentDate.getMonth() - 1);
-        generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
+        generateCalendar(currentDate);
     });
 
     nextMonthBtn.addEventListener('click', function() {
         currentDate.setMonth(currentDate.getMonth() + 1);
-        generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
+        generateCalendar(currentDate);
     });
 });

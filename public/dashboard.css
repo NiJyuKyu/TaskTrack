@@ -1,15 +1,13 @@
 /* General Styles */
-body {
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f7fc;
-    color: #333;
+.center {
+    text-align: center;
+    /* other styles */
 }
+
 
 /* Sidebar Styles */
 .sidebar-left {
-    width: 250px;
+    width: 150px;
     height: 100vh;
     position: fixed;
     left: 0;
@@ -52,234 +50,24 @@ body {
     margin-right: 10px;
 }
 
-/* Profile Section */
-.profile {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
-    display: flex;
-    align-items: center;
-    background-color: #89949f;
-    padding: 10px;
-    border-radius: 5px;
-}
-
-.profile-pic {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
-}
-
-.profile-name {
-    font-weight: bold;
-}
-
-/* Main Content */
-.main-content {
-    margin-left: 250px;
-    padding: 30px;
-}
-
-/* Overview Page */
-.dashboard {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.stat-card {
-    background-color: #fff;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    flex: 1;
-    min-width: 200px;
-    text-align: center;
-}
-
-.stat-card h2 {
-    margin-top: 0;
-    color: #2c3e50;
-}
-
-.stat-card p {
-    font-size: 24px;
-    font-weight: bold;
-    color: #3498db;
-}
-
-/* Task Summary Table */
-.task-summary {
-    background-color: #fff;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    margin-top: 20px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #e0e0e0;
-}
-
-th {
-    background-color: #f2f2f2;
-    font-weight: bold;
-}
 
 /* Buttons */
 button {
-    background-color: #3498db;
+    background-color: #f00808;
     color: white;
     border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
+    width: 150px;
+    padding: 5px 8px;
+    border-radius: 3px;
     cursor: pointer;
     transition: background-color 0.3s;
+    text-align: center;
 }
 
 button:hover {
-    background-color: #2980b9;
+    background-color: #f00808;
 }
-
-/* Modal Styles */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.5);
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border-radius: 10px;
-    width: 50%;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close:hover {
-    color: #000;
-}
-
-/* Add/Edit Note Modal */
-.add-note-modal, .update-note-modal, .delete-confirm-modal, .update-todo-modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.5);
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border-radius: 10px;
-    width: 40%;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-/* Notes */
-.notes-container {
-    list-style: none;
-    padding: 0;
-}
-
-.notes-container li {
-    background: #fff;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    position: relative;
-}
-
-.notes-container li button {
-    background: #3498db;
-    color: #fff;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-left: 10px;
-}
-
-.notes-container li button:hover {
-    background: #2980b9;
-}
-
-/* To-Do List */
-.todo-list {
-    list-style: none;
-    padding: 0;
-}
-
-.todo-list li {
-    background: #fff;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    position: relative;
-}
-
-.todo-list li button {
-    background: #3498db;
-    color: #fff;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-left: 10px;
-}
-
-.todo-list li button:hover {
-    background: #2980b9;
-}
-
-
-/* Form Styles */
-.form-group {
-    margin-bottom: 15px;
-}
-
-label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-input[type="text"],
-input[type="password"],
-input[type="file"],
-select {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
+    
 
 /* Responsive Design */
 @media (max-width: 768px) {

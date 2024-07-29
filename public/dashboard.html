@@ -5,114 +5,116 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TaskTrack</title>
     <link rel="stylesheet" href="dashboard.css">
-    <link rel = "stylesheet" href="calendar.css">
-    <link rel = "stylesheet" href="taskpage.css">
-    <link rel = "stylesheet" href="todo.css">
-    <link rel = "stylesheet" href="note.css">
+    <link rel="stylesheet" href="calendar.css">
+    <link rel="stylesheet" href="taskpage.css">
+    <link rel="stylesheet" href="todo.css">
+    <link rel="stylesheet" href="note.css">
     <link rel="stylesheet" href="profile.css">
     <link rel="stylesheet" href="overview.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
-<body>   
-        <div class="sidebar-left">
-            <div class="logo">
-                <div class="tasktrack">TaskTrack</div>
-            </div>
+<body>
+    <div class="sidebar-left">
+        <div class="logo">
+            <div class="tasktrack">TaskTrack</div>
+        </div>
+        <ul class="nav">
+            <li class="nav-item active" data-page="overview">
+                <i class="fas fa-list"></i>
+                Overview
+            </li>
+            <li class="nav-item" data-page="calendar">
+                <i class="fas fa-calendar-alt"></i>
+                Calendar
+            </li>
+            <li class="nav-item" data-page="tasks">
+                <i class="fas fa-tasks"></i>
+                Task
+            </li>
+            <li class="nav-item" data-page="notes">
+                <i class="fas fa-notes"></i>
+                Notes
+            </li>
+            <li class="nav-item" data-page="todolist">
+                <i class="fas fa-tasks"></i>
+                To Do Lists
+            </li>
             <ul class="nav">
-                <li class="nav-item active" data-page="overview">
-                    <i class="fas fa-list"></i>
-                    Overview
-                </li>
-                <li class="nav-item" data-page="calendar">
-                    <i class="fas fa-calendar-alt"></i>
-                    Calendar
-                </li>
-                <li class="nav-item" data-page="tasks">
-                    <i class="fas fa-tasks"></i>
-                    Task
-                </li>
-                <li class="nav-item" data-page="notes">
-                    <i class="fas fa-notes"></i>
-                    Notes
-                </li>
-                <li class="nav-item" data-page="todolist">
-                    <i class="fas fa-tasks"></i>
-                    To Do Lists
-                </li>
-            </ul>
-            
-            <!-- Profile -->
-            <div class="profile-section">
-                <img src="/images/default-avatar.png" alt="Profile Picture" id="profile-picture" class="profile-picture">
-                <span id="username">Username</span>
-                <div class="profile-options">
+                <!-- Profile -->
+                    <div class="profile-section">
+                        <img src="/images/default-avatar.png" alt="Profile Picture" id="profile-picture" class="profile-picture">
+                        <span id="username">Username</span>
+                    </div>
+                </ul>
+                <ul class="nav">
                     <button id="edit-profile-btn">Edit Profile</button>
                     <button id="signOutBtn">Sign Out</button>
-                </div>
-            </div>
-              
-              <!-- Pop-up menu for editing profile -->
-              <div id="edit-profile-popup" class="popup">
-                <div class="popup-content">
-                  <span class="close">&times;</span>
-                  <h2>Edit Profile</h2>
-                  <form id="edit-profile-form">
-                    <label for="new-username">Username:</label>
-                    <input type="text" id="new-username" required>
-                    <label for="new-avatar">Profile Picture:</label>
-                    <input type="file" id="new-avatar" accept="image/*">
-                    <button type="submit">Save Changes</button>
-                  </form>
-                </div>
+                </ul>
+        </ul>
+        <!-- Pop-up menu for editing profile -->
+        <div id="edit-profile-popup" class="popup">
+            <div class="popup-content">
+              <span class="close">&times;</span>
+              <h2>Edit Profile</h2>
+              <form id="edit-profile-form">
+                <label for="new-username">Username:</label>
+                <input type="text" id="new-username" required>
+                <label for="new-avatar">Profile Picture:</label>
+                <input type="file" id="new-avatar" accept="image/*">
+                <button type="submit">Save Changes</button>
+              </form>
             </div>
         </div>
+    </div>
 
-            <!-- Overview -->         
-            <div id="overview-container" class="overview hidden">
-                <div class="main-content" id="overview-page">
-                    <h1>Overview</h1>
-                    <div class="dashboard">
-                        <div class="stats">
-                            <div class="stat-card">
-                                <h2>Tasks Completed</h2>
-                                <p id="tasks-completed">10</p>
-                            </div>
-                            <div class="stat-card">
-                                <h2>Pending Tasks</h2>
-                                <p id="pending-tasks">5</p>
-                            </div>
-                            <div class="stat-card">
-                                <h2>Upcoming Events</h2>
-                                <p id="upcoming-events">3</p>
-                            </div>
+    <div class="center">
+        <!-- Overview -->         
+        <div id="overview-container" class="overview hidden">
+            <div class="main-content" id="overview-page">
+                <h1>Overview</h1>
+                <div class="dashboard">
+                    <div class="stats">
+                        <div class="stat-card">
+                            <h2>Tasks Completed</h2>
+                            <p id="tasks-completed">10</p>
                         </div>
-                        <div class="task-summary">
-                            <h2>Task Summary</h2>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Task</th>
-                                        <th>Status</th>
-                                        <th>Due Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="task-summary-list">
-                                    <!-- Summary will be dynamically added here -->
-                                </tbody>
-                            </table>
+                        <div class="stat-card">
+                            <h2>Pending Tasks</h2>
+                            <p id="pending-tasks">5</p>
+                        </div>
+                        <div class="stat-card">
+                            <h2>Upcoming Events</h2>
+                            <p id="upcoming-events">3</p>
                         </div>
                     </div>
-                    <div class="recent-task">
-                        <h2>Recent Task</h2>
-                        <div id="recent-task-content">
-                            <!-- Recent task will be dynamically added here -->
-                        </div>
+                    <div class="task-summary">
+                        <h2>Task Summary</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Task</th>
+                                    <th>Status</th>
+                                    <th>Due Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="task-summary-list">
+                                <!-- Summary will be dynamically added here -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-            </div>                        
+                <div class="recent-task">
+                    <h2>Recent Task</h2>
+                    <div id="recent-task-content">
+                        <!-- Recent task will be dynamically added here -->
+                    </div>
+                </div>
+            </div>
+        </div>                        
+    </div>
 
-                     
-         
+        <!-- Task -->
+        <div class="center">    
             <div class="project-tasks" id="tasks-page" style="display: none;">
                 <h1>TaskTrack Sprint</h1>
                 <button id="addTaskButton">Add Task</button>
@@ -171,149 +173,137 @@
                 </select>
                 <button id="saveUpdateButton">Save</button>
                 <button id="cancelUpdateButton">Cancel</button>
-            </div>         
+            </div>
+        </div>
+
+
+        <!-- Calendar Page -->
+        <div id="calendar-page" class="page-content" style="display: none;">
             <div id="calendar-container">
                 <div id="calendar-header">
-                  <button id="prev-month">&lt;</button>
-                  <h2 id="month-year"></h2>
-                  <button id="next-month">&gt;</button>
+                    <button id="prev-month">&lt;</button>
+                    <h2 id="month-year"></h2>
+                    <button id="next-month">&gt;</button>
                 </div>
                 <table id="calendar">
-                  <thead>
-                    <tr>
-                      <th>Sun</th>
-                      <th>Mon</th>
-                      <th>Tue</th>
-                      <th>Wed</th>
-                      <th>Thu</th>
-                      <th>Fri</th>
-                      <th>Sat</th>
-                    </tr>
-                  </thead>
-                  <tbody id="calendar-body">
-                  </tbody>
+                    <thead>
+                        <tr>
+                            <th>Sun</th>
+                            <th>Mon</th>
+                            <th>Tue</th>
+                            <th>Wed</th>
+                            <th>Thu</th>
+                            <th>Fri</th>
+                            <th>Sat</th>
+                        </tr>
+                    </thead>
+                    <tbody id="calendar-body"></tbody>
                 </table>
-                
                 <button id="add-event-btn">Add Event</button>
-                
                 <div id="events-list">
-                  <h2>Events</h2>
-                  <ul id="events"></ul>
+                    <h2>Events</h2>
+                    <ul id="events"></ul>
                 </div>
-              </div>
-              
-              <div id="event-popup" class="popup">
+            </div>
+            <!-- Event Popup -->
+            <div id="event-popup" class="popup">
                 <div class="popup-content">
-                  <span class="close">&times;</span>
-                  <h3 id="popup-date"></h3>
-                  <div id="popup-events"></div>
-                </div>
-              </div>
-              
-              <div id="add-event-popup" class="popup">
-                <div class="popup-content">
-                  <span class="close">&times;</span>
-                  <h2 id="event-form-title">Add Event</h2>
-                  <form id="eventForm">
-                    <input type="hidden" id="eventId">
-                    <label for="eventTitle">Event Title:</label>
-                    <input type="text" id="eventTitle" required>
-                    <label for="eventDate">Date:</label>
-                    <input type="date" id="eventDate" required>
-                    <button id="save-event-btn">Save Event</button>
-                  </form>
+                    <span class="close">&times;</span>
+                    <h3 id="popup-date"></h3>
+                    <div id="popup-events"></div>
                 </div>
             </div>
-        </div>
-
-
-
-       
-        <!-- Page Content -->
-<div class="page-content">
-    <!-- Notes Page -->
-    <div class="notes" id="notes-page">
-        <div class="sidebar-header">
-            <h1>Notes</h1>
-            <ul id="notesContainer"></ul>
-            <button id="openAddNoteModalButton">Add Note</button>
-        </div>
-        <!-- Add Note Modal -->
-        <div id="addNoteModal" class="modal">
-            <div class="modal-content">
-                <span id="closeAddNoteModalButton" class="close-button">&times;</span>
-                <h2>Add Note</h2>
-                <input type="text" id="noteTitle" placeholder="Title">
-                <textarea id="noteContent" placeholder="Content"></textarea>
-                <button id="addNoteButton">Add Note</button>
-                <button id="cancelAddNoteButton">Cancel</button>
+            <!-- Add Event Popup -->
+            <div id="add-event-popup" class="popup">
+                <span class="close">&times;</span>
+                <form id="eventForm">
+                    <input type="hidden" id="event-id" />
+                    <label for="event-title">Title:</label>
+                    <input type="text" id="event-title" required />
+                    <label for="event-date">Date:</label>
+                    <input type="date" id="event-date" required />
+                    <button id="save-event-btn">Save</button>
+                </form>
             </div>
         </div>
-        <!-- Update Note Modal -->
-        <div id="updateNoteModal" class="modal">
-            <div class="modal-content">
-                <span id="closeUpdateNoteModalButton" class="close-button">&times;</span>
-                <h2>Update Note</h2>
-                <input type="text" id="updateNoteTitle" placeholder="Note Title">
-                <textarea id="updateNoteContent" placeholder="Note Content"></textarea>
-                <button id="saveUpdateNoteButton">Save Changes</button>
-                <button id="cancelUpdateNoteButton">Cancel</button>
-            </div>
-        </div>
-        <!-- Modal Overlay -->
-    </div>
-</div>
 
+        <!-- Notes -->
+        <div id="notes-page" class="notes-content" style="display: none;">
+            <div class="center">
+                <div class="notes" id="notes-page">
+                    <div class="sidebar-header">
+                        <h1>Notes</h1>
+                        <ul id="notesContainer"></ul>
+                        <button id="openAddNoteModalButton">Add Note</button>
+                    </div>
+                </div>
+                <!-- Add Note Modal -->
+                <div id="addNoteModal" class="modal">
+                    <div class="modal-content">
+                        <span id="closeAddNoteModalButton" class="close-button">&times;</span>
+                        <h2>Add Note</h2>
+                        <input type="text" id="noteTitle" placeholder="Title">
+                        <textarea id="noteContent" placeholder="Content"></textarea>
+                        <button id="addNoteButton">Add Note</button>
+                        <button id="cancelAddNoteButton">Cancel</button>
+                    </div>
+                </div>
+                <!-- Update Note Modal -->
+                <div id="updateNoteModal" class="modal">
+                    <div class="modal-content">
+                        <span id="closeUpdateNoteModalButton" class="close-button">&times;</span>
+                        <h2>Update Note</h2>
+                        <input type="text" id="updateNoteTitle" placeholder="Note Title">
+                        <textarea id="updateNoteContent" placeholder="Note Content"></textarea>
+                        <button id="saveUpdateNoteButton">Save Changes</button>
+                        <button id="cancelUpdateNoteButton">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>    
 
         <!-- To-Do List Page -->
-        <div class="todolist" id="todolist-page" style="display: none;">
-        <div class="container">
-            <h1>To-Do List</h1>
-            <button id="openAddTodoModalButton">Add New To-Do</button>
-              <ul id="todosContainer" class="todo-list">
-                <!-- To-dos will be dynamically added here -->
-            </ul>
-    
-        <!-- Add Todo Modal -->
-        <div id="addTodoModal" class="modal">
-            <div class="modal-content">
-                <span id="closeAddTodoModalButton" class="close">&times;</span>
-                <h2>Add New To-Do</h2>
-                <input type="text" id="todoTitle" placeholder="Enter title">
-                <button id="addTodoButton">Add Todo</button>
-                <button id="cancelAddTodoButton">Cancel</button>
+            <div class="todolist" id="todolist-page" style="display: none;">
+                <div class="container">
+                    <h1>To-Do List</h1>
+                    <button id="openAddTodoModalButton">Add New To-Do</button>
+                    <ul id="todosContainer" class="todo-list">
+                        <!-- To-dos will be dynamically added here -->
+                    </ul>
+                </div>
+            </div>        
+        
+            <!-- Add Todo Modal -->
+            <div id="addTodoModal" class="modal">
+                <div class="modal-content">
+                    <span id="closeAddTodoModalButton" class="close">&times;</span>
+                    <h2>Add New To-Do</h2>
+                    <input type="text" id="todoTitle" placeholder="Enter title">
+                    <button id="addTodoButton">Add Todo</button>
+                    <button id="cancelAddTodoButton">Cancel</button>
+                </div>
+            </div>
+        
+            <!-- Update Todo Modal -->
+            <div id="updateTodoModal" class="modal">
+                <div class="modal-content">
+                    <span id="closeUpdateTodoModalButton" class="close">&times;</span>
+                    <h2>Update To-Do</h2>
+                    <input type="text" id="updateTodoTitle" placeholder="Update title">
+                    <button id="saveUpdateTodoButton">Save</button>
+                    <button id="cancelUpdateTodoButton">Cancel</button>
+                </div>
             </div>
         </div>
-    
-        <!-- Update Todo Modal -->
-        <div id="updateTodoModal" class="modal">
-            <div class="modal-content">
-                <span id="closeUpdateTodoModalButton" class="close">&times;</span>
-                <h2>Update To-Do</h2>
-                <input type="text" id="updateTodoTitle" placeholder="Update title">
-                <button id="saveUpdateTodoButton">Save</button>
-                <button id="cancelUpdateTodoButton">Cancel</button>
-            </div>
-        </div>
-    
-        <!-- Modal Overlay -->
-       </div>
-    </div> 
-                   
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/main.min.js"></script>
+
     <script src="dashboard.js"></script>
     <script src="calendar.js"></script>
     <script src="taskpage.js"></script>
     <script src="todo.js"></script>
     <script src="note.js"></script>
-    <script src="overview.js"></script>
-    <script src="signOut.js"></script>  
-    <script src="calendar.js"></script>
     <script src="profile.js"></script>
+    <script src="overview.js"></script>
+    <script src="signOut.js"></script> 
     <script>
         // Set the user ID dynamically
         const userId = 'USER_ID_HERE'; // Replace with actual user ID fetched from the backend

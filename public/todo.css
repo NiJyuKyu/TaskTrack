@@ -1,13 +1,10 @@
-/* todo.css */
-
-/* Basic styling */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
+/* Centering content */
+.center {
+    text-align: center;
+    /* other styles */
 }
 
+/* Todo List container */
 .todolist {
     padding: 20px;
     background: #fff;
@@ -16,10 +13,7 @@ body {
     margin: 20px auto;
 }
 
-.sidebar-header {
-    margin-bottom: 20px;
-}
-
+/* Todo List */
 #todo-list {
     list-style: none;
     padding: 0;
@@ -39,24 +33,34 @@ body {
     margin-left: 10px;
 }
 
+/* Modal styling */
 .modal {
     display: none;
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    pointer-events: none; /* Ensures it's not clickable when hidden */
+}
+
+.modal.active {
+    display: flex;
+    pointer-events: auto; /* Makes it clickable when visible */
 }
 
 .modal-content {
-    position: relative;
-    background: #fff;
+    background: #ffffff;
     padding: 20px;
     border-radius: 4px;
     width: 300px;
+    max-height: 80%; /* Ensures the modal content is not too tall */
+    overflow-y: auto; /* Adds scroll if the content is taller than the modal */
+    position: relative; /* For positioning the close button */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    margin: 0 auto;
 }
 
 .close-button {
@@ -68,10 +72,16 @@ body {
 }
 
 .modal-overlay {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
+    display: none; /* Hidden by default */
+    z-index: 999; /* Ensure it’s below the modal content */
+}
+
+.modal-overlay.active {
+    display: block;
 }
