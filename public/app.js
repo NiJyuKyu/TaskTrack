@@ -40,6 +40,9 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
 
     const result = await response.json();
     if (response.status === 200) {
+        // Store userId and token in localStorage
+        localStorage.setItem('userId', result.userId);
+        localStorage.setItem('token', result.token); // Store token if using JWT
         alert('Login successful');
         window.location.href = 'dashboard.html';
     } else {
