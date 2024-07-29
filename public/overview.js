@@ -83,6 +83,6 @@ document.addEventListener('DOMContentLoaded', () => {
             upcomingEventsList.appendChild(eventItem);
         });
 
-        upcomingEventsElement.textContent = `${upcomingEvents.length}`;
+        upcomingEventsElement.textContent = `${upcomingEvents.length} `;
     }
 });
