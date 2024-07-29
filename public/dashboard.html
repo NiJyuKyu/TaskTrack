@@ -70,46 +70,46 @@
     <div class="center">
         <!-- Overview -->         
         <div id="overview-container" class="overview hidden">
-            <div class="main-content" id="overview-page">
-                <h1>Overview</h1>
-                <div class="dashboard">
-                    <div class="stats">
-                        <div class="stat-card">
-                            <h2>Tasks Completed</h2>
-                            <p id="tasks-completed">10</p>
+            <div class="main-content">
+                <div class="main-content" id="overview-page">
+                    <h1>Overview</h1>
+                    <div class="dashboard">
+                        <div class="stats">
+                            <div class="stat-card">
+                                <h2>Tasks Completed</h2>
+                                <p id="tasks-completed">0</p>
+                            </div>
+                            <div class="stat-card">
+                                <h2>Pending Tasks</h2>
+                                <p id="pending-tasks">0</p>
+                            </div>
+                            <div class="stat-card">
+                                <h2>Upcoming Events</h2>
+                                <p id="upcoming-events">0</p>
+                                <ul id="upcoming-events-list"></ul>
+                            </div>
                         </div>
-                        <div class="stat-card">
-                            <h2>Pending Tasks</h2>
-                            <p id="pending-tasks">5</p>
+                        <div class="task-summary">
+                            <h2>Task Summary</h2>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Task</th>
+                                        <th>Status</th>
+                                        <th>Due Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="task-summary-list">
+                                    <!-- Summary will be dynamically added here -->
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="stat-card">
-                            <h2>Upcoming Events</h2>
-                            <p id="upcoming-events">3</p>
+                        <div id="recent-task-content">
+                            <!-- Recent task details will be dynamically added here -->
                         </div>
-                    </div>
-                    <div class="task-summary">
-                        <h2>Task Summary</h2>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Task</th>
-                                    <th>Status</th>
-                                    <th>Due Date</th>
-                                </tr>
-                            </thead>
-                            <tbody id="task-summary-list">
-                                <!-- Summary will be dynamically added here -->
-                            </tbody>
-                        </table>
                     </div>
                 </div>
-                <div class="recent-task">
-                    <h2>Recent Task</h2>
-                    <div id="recent-task-content">
-                        <!-- Recent task will be dynamically added here -->
-                    </div>
-                </div>
-            </div>
+            </div>                        
         </div>                        
     </div>
 
@@ -227,6 +227,7 @@
             </div>
         </div>
 
+    
         <!-- Notes -->
         <div id="notes-page" class="notes-content" style="display: none;">
             <div class="center">
@@ -248,6 +249,7 @@
                         <button id="cancelAddNoteButton">Cancel</button>
                     </div>
                 </div>
+
                 <!-- Update Note Modal -->
                 <div id="updateNoteModal" class="modal">
                     <div class="modal-content">
@@ -260,7 +262,7 @@
                     </div>
                 </div>
             </div>
-        </div>    
+        </div>            
 
         <!-- To-Do List Page -->
             <div class="todolist" id="todolist-page" style="display: none;">
