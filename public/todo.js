@@ -32,26 +32,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to open the add todo modal
     function openAddTodoModal() {
-        addTodoModal.style.display = 'block';
-        modalOverlay.style.display = 'block';
+        addTodoModal.classList.add('active');
+        modalOverlay.classList.add('active');
     }
 
     // Function to close the add todo modal
     function closeAddTodoModal() {
-        addTodoModal.style.display = 'none';
-        modalOverlay.style.display = 'none';
+        addTodoModal.classList.remove('active');
+        modalOverlay.classList.remove('active');
     }
 
     // Function to open the update todo modal
     function openUpdateTodoModal() {
-        updateTodoModal.style.display = 'block';
-        modalOverlay.style.display = 'block';
+        updateTodoModal.classList.add('active');
+        modalOverlay.classList.add('active');
     }
 
     // Function to close the update todo modal
     function closeUpdateTodoModal() {
-        updateTodoModal.style.display = 'none';
-        modalOverlay.style.display = 'none';
+        updateTodoModal.classList.remove('active');
+        modalOverlay.classList.remove('active');
     }
 
     // Function to clear the form

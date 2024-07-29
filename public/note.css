@@ -9,13 +9,13 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
+    width: 50%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     display: none;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 500;
 }
 
 /* Add Note Modal Styles */
@@ -27,6 +27,7 @@ body {
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     position: relative;
+    margin: 0 auto;
 }
 
 #addNoteModal h2,
@@ -59,7 +60,7 @@ button:hover {
 
 #addNoteButton,
 #saveUpdateButton {
-    background-color: #4CAF50;
+    background-color: #d23333;
     color: white;
 }
 
@@ -79,11 +80,12 @@ button:hover {
 
 #notesContainer li {
     background: #f9f9f9;
-    border: 1px solid #ddd;
+    border: 1px solid #971313;
     border-radius: 8px;
-    margin: 10px 0;
+    margin: 0 auto;
     padding: 15px;
     position: relative;
+    width: 50%;
 }
 
 /* Note Header and Content */
@@ -113,7 +115,7 @@ button:hover {
 }
 
 .update-note-button {
-    background-color: #2196F3;
+    background-color: #e74d4d;
     color: white;
 }
 

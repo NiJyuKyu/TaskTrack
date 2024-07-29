@@ -143,10 +143,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         taskElement.querySelector('.delete-task-button').addEventListener('click', () => {
-            deleteTaskFromServer(id);
-            taskElement.remove();
-            removeTaskFromLocal(id); // Remove task from Local Storage
-            removeTaskFromSession(id); // Remove task from Session Storage
+            if (confirm('Are you sure you want to delete this task?')) {
+                deleteTaskFromServer(id);
+                taskElement.remove();
+            }
         });
 
         taskList.appendChild(taskElement);

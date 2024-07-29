@@ -1,18 +1,9 @@
-/* General styles */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    overflow: hidden; /* Prevents scrollbars from appearing */
-    box-sizing: border-box; /* Ensure padding is included in width/height calculations */
+/* Container for task manager */
+.center {
+    text-align: center;
+    /* other styles */
 }
 
-/* Container for task manager */
 .task-manager {
     background-color: #fff;
     padding: 20px;
@@ -60,18 +51,19 @@ button.delete:hover {
 
 /* Update Button */
 button.update-task-button {
-    background-color: #3498db;
+    background-color: #b82626;
 }
 
 button.update-task-button:hover {
-    background-color: #2980b9;
+    background-color: #b82626;
 }
 
 /* Table Styles */
 table {
-    width: 100%;
+    width: 50%;
     border-collapse: collapse;
     margin-top: 10px;
+    margin: 0 auto;
 }
 
 table, th, td {
