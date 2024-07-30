@@ -125,15 +125,15 @@
   z-index: 1;
   left: 0;
   top: 0;
-  width: 100%;
-  height: 100%;
+  width: 100%; /* Changed to cover full screen */
+  height: 100%; /* Changed to cover full screen */
   overflow: auto;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(230, 77, 22, 0.5);
 }
 
 .popup-content {
   background-color: #fefefe;
-  margin: 10% auto;
+  margin: 5% auto; /* Adjusted for full screen centering */
   padding: 20px;
   border: 1px solid #888;
   width: 80%;
@@ -201,6 +201,7 @@
 #eventForm {
   display: flex;
   flex-direction: column;
+  align-items: center; /* Center the form content horizontally */
 }
 
 #eventForm label {
@@ -209,8 +210,11 @@
   color: #333;
 }
 
-#eventForm input {
-  margin-top: 5px;
+#eventForm input[type="text"],
+#eventForm input[type="date"] {
+  width: 100%; /* Make inputs take full width */
+  max-width: 300px; /* Restrict maximum width */
+  margin-top: 5px; /* Add margin between inputs and labels */
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;

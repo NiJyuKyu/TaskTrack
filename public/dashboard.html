@@ -228,41 +228,49 @@
         </div>
 
     
-        <!-- Notes -->
-        <div id="notes-page" class="notes-content" style="display: none;">
-            <div class="center">
-                <div class="notes" id="notes-page">
-                    <div class="sidebar-header">
-                        <h1>Notes</h1>
-                        <ul id="notesContainer"></ul>
-                        <button id="openAddNoteModalButton">Add Note</button>
-                    </div>
-                </div>
-                <!-- Add Note Modal -->
-                <div id="addNoteModal" class="modal">
-                    <div class="modal-content">
-                        <span id="closeAddNoteModalButton" class="close-button">&times;</span>
-                        <h2>Add Note</h2>
-                        <input type="text" id="noteTitle" placeholder="Title">
-                        <textarea id="noteContent" placeholder="Content"></textarea>
-                        <button id="addNoteButton">Add Note</button>
-                        <button id="cancelAddNoteButton">Cancel</button>
-                    </div>
-                </div>
-
-                <!-- Update Note Modal -->
-                <div id="updateNoteModal" class="modal">
-                    <div class="modal-content">
-                        <span id="closeUpdateNoteModalButton" class="close-button">&times;</span>
-                        <h2>Update Note</h2>
-                        <input type="text" id="updateNoteTitle" placeholder="Note Title">
-                        <textarea id="updateNoteContent" placeholder="Note Content"></textarea>
-                        <button id="saveUpdateNoteButton">Save Changes</button>
-                        <button id="cancelUpdateNoteButton">Cancel</button>
-                    </div>
-                </div>
+        <!-- Notes Page -->
+<div class="notes-content" id="notes-page" style="display: none;">
+    <div class="center">
+        <div class="notes">
+            <div class="sidebar-header">
+                <h1>Notes</h1>
+                <button id="openAddNoteModalButton">Add Note</button>
             </div>
-        </div>            
+            <ul id="notesContainer" class="notes-list">
+                <!-- Notes will be dynamically added here -->
+            </ul>
+        </div>
+        
+        <!-- Add Note Modal -->
+        <div id="addNoteModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span id="closeAddNoteModalButton" class="close">&times;</span>
+                <h2>Add Note</h2>
+                <input type="text" id="noteTitle" placeholder="Title">
+                <textarea id="noteContent" placeholder="Content"></textarea>
+                <button id="addNoteButton">Add Note</button>
+                <button id="cancelAddNoteButton">Cancel</button>
+            </div>
+        </div>
+        
+        <!-- Update Note Modal -->
+        <div id="updateNoteModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span id="closeUpdateNoteModalButton" class="close">&times;</span>
+                <h2>Update Note</h2>
+                <input type="text" id="updateNoteTitle" placeholder="Title">
+                <textarea id="updateNoteContent" placeholder="Content"></textarea>
+                <button id="saveUpdateNoteButton">Save</button>
+                <button id="cancelUpdateNoteButton">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+    
+            
 
         <!-- To-Do List Page -->
             <div class="todolist" id="todolist-page" style="display: none;">
