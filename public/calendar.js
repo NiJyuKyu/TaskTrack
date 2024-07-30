@@ -107,8 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const eventDiv = document.createElement('div');
                 eventDiv.innerHTML = `
                     <p>${event.title}</p>
-                    <button onclick="editEvent('${date}', '${event._id}')">Edit</button>
-                    <button onclick="deleteEvent('${date}', '${event._id}')">Delete</button>
+                    
                 `;
                 popupEvents.appendChild(eventDiv);
             });

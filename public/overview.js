@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch('/tasks') // Adjust the endpoint as per your server setup
             .then(response => response.json())
             .then(data => {
+                console.log('Tasks Data:', data); // Debugging log
                 updateStats(data);
                 populateTaskSummary(data);
                 displayRecentTask(data);
@@ -16,7 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function fetchCalendarEvents() {
         fetch('/events') // Adjust the endpoint for calendar events
             .then(response => response.json())
-            .then(data => { 
+            .then(data => {
+                console.log('Events Data:', data); // Debugging log
                 updateUpcomingEvents(data);
             })
             .catch(error => console.error('Error fetching calendar events:', error));
@@ -25,7 +27,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateStats(data) {
         const completedTasks = data.filter(task => task.status === 'Completed').length;
         const pendingTasks = data.filter(task => task.status === 'Incomplete' || task.status === 'Ongoing').length;
-        
+
+        console.log('Completed Tasks Count:', completedTasks); // Debugging log
+        console.log('Pending Tasks Count:', pendingTasks); // Debugging log
+
         document.getElementById('tasks-completed').textContent = completedTasks;
         document.getElementById('pending-tasks').textContent = pendingTasks;
     }
@@ -49,6 +54,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const recentTaskContent = document.getElementById('recent-task-content');
         const recentTask = data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))[0];
 
+        console.log('Recent Task:', recentTask); // Debugging log
+
         if (recentTask) {
             recentTaskContent.innerHTML = `
                 <h3>${recentTask.name}</h3>
@@ -65,7 +72,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const upcomingEventsList = document.getElementById('upcoming-events-list');
         upcomingEventsList.innerHTML = '';
 
-        const upcomingEvents = events.filter(event => new Date(event.date) > new Date());
+        const today = new Date();
+        const upcomingEvents = events.filter(event => new Date(event.date) > today);
+
+        console.log('Upcoming Events:', upcomingEvents); // Debugging log
 
         upcomingEvents.forEach(event => {
             const eventItem = document.createElement('li');
@@ -73,6 +83,6 @@ document.addEventListener('DOMContentLoaded', () => {
             upcomingEventsList.appendChild(eventItem);
         });
 
-        upcomingEventsElement.textContent = `${upcomingEvents.length} upcoming events`;
+        upcomingEventsElement.textContent = `${upcomingEvents.length}`;
     }
 });
